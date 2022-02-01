@@ -1,9 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView, Text } from 'react-native';
 import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
+import { ProductoContext } from '../context/ProductoContext';
 import { HookPedidos } from '../hook/HookPedidos';
+import { Pedido } from '../interfaces/interfaces';
 
 
 interface Props extends NativeStackScreenProps<any, any> {
@@ -11,33 +13,25 @@ interface Props extends NativeStackScreenProps<any, any> {
 
 
 
-export const Pedido = ({ route }: Props) => {
+export const PedidoScreen = ({ route }: Props) => {
 
-    const { restarProducto,
-        sumarProducto,
-        cantidadProducto,
-        total,
-        setcantidadProducto, actState } = HookPedidos();
+    const {pedidoState, addPedido} = useContext(ProductoContext);
 
-        useEffect(() => {
-            actState(route.params?.cantidadProducto);
-        }, []);
+
+
         
-
-        // 
-
 
     return (<>
         <AppBar />
-        <Text style={{ fontSize: 20 }}>{JSON.stringify(cantidadProducto)}</Text>
+        <Text style={{ fontSize: 20 }}>{JSON.stringify(pedidoState)}</Text>
 
         <ScrollView>
 
         
 
-        {cantidadProducto.map((e: { producto: string; cantidad: number; precio: number; }) => (
+        {pedidoState.pedidos.map((e: Pedido ) => (
                         <><Text style={{ fontSize: 20 }}>{JSON.stringify(e)}</Text>
-                        <Producto restarProducto={restarProducto} sumarProducto={sumarProducto} producto={e} cantidadProductos={cantidadProducto}/>
+                        <Producto key={e.id} producto={e} />
                         </> ))}  
                     </ScrollView>
     </>)

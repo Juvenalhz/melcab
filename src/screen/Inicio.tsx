@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { View } from 'react-native'
 import { AppBar } from '../componentes/AppBar'
 import { Categorias } from '../componentes/Categorias'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -10,8 +10,9 @@ interface Props extends NativeStackScreenProps<any, any> {
 
 export const Inicio = ({ navigation, route }: Props) => {
     return (
-        <ProductoProvider>
 
+
+        <>
             {/* appbar */}
             <AppBar />
 
@@ -48,23 +49,7 @@ export const Inicio = ({ navigation, route }: Props) => {
             <View style={{
                 flex: 0.1, backgroundColor: "#fff", borderTopEndRadius: 10, borderTopStartRadius: 10,
             }}></View>
-        </ProductoProvider>
+        </>
+
     );
 }
-
-const styles = StyleSheet.create({
-    btnCategoria: {
-        alignItems: "center",
-        backgroundColor: "#DDDDDD",
-        padding: 10,
-        height: 150,
-        width: 150,
-        borderRadius: 10
-    },
-    texto: {
-        color: '#0D3084',
-        fontSize: 25,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    }
-})
