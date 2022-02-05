@@ -5,6 +5,7 @@ import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
 import { ProductoContext } from '../context/ProductoContext';
 import { HookProductos } from '../hook/HookProductos';
+import * as Progress from 'react-native-progress';
 
 interface Props extends NativeStackScreenProps<any, any> {
 }
@@ -17,31 +18,31 @@ export const Productos = ({ navigation }: Props) => {
 
     const datosproducto = [{
         id: '1',
-        nombre: 'pepsi',
+        nombre: 'Pepsi',
         precio: 2
     }, {
         id: '2',
-        nombre: 'doritos',
+        nombre: 'Doritos',
         precio: 0.5
     },
     {
         id: '3',
-        nombre: 'mantequilla',
+        nombre: 'Mantequilla',
         precio: 1.5
     },
     {
         id: '4',
-        nombre: 'platanito',
+        nombre: 'Platanito',
         precio: 1.5
     },
     {
         id: '5',
-        nombre: 'harina',
+        nombre: 'Harina',
         precio: 1.5
     },
     {
-        id: 'd',
-        nombre: 'compota',
+        id: '6',
+        nombre: 'Compota',
         precio: 1.5
     }]
 
@@ -72,10 +73,10 @@ export const Productos = ({ navigation }: Props) => {
                     flex: 1, backgroundColor: "white", borderTopEndRadius: 10, borderTopStartRadius: 10, justifyContent: 'center', alignItems: 'center'
 
                 }}>
-                    <View style={{ flexDirection: 'row', }}>
+                    <View style={{ flexDirection: 'row'}}>
                         <Text style={{ color: '#0D3084', fontSize: 18 }}>TOTAL </Text>
                         <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> - </Text>
-                        <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {total} </Text>
+                        <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {pedidoState.total} </Text>
                     </View>
                 </View>
             </TouchableOpacity>

@@ -31,8 +31,25 @@ export const ProductoProvider = ({ children }: props) => {
             dispatch({type:'nuevoPedido' , payload: pedidoAct})}
     }
 
+    const resPedido = (pedidoAct: Pedido) => {
+
+        const query = pedidoState.pedidos.find((pedido) => 
+            pedido.nombre == pedidoAct.nombre );
+
+        console.log('addpedido: ' + JSON.stringify(query))
+
+        if (query) {
+            const cantidad = pedidoState.pedidos.find((pedido) => 
+            pedido.nombre == pedidoAct.nombre )?.cantidad;
+
+            if (cantidad == 1) {
+                dispatch({type:'eliminarPedido' , payload: pedidoAct})
+            }else dispatch({type:'resPedido' , payload: pedidoAct})
+        } else  return
+    }
+
     return (
-    <ProductoContext.Provider value={{pedidoState, addPedido}}>
+    <ProductoContext.Provider value={{pedidoState, addPedido, resPedido}}>
         { children }
     </ProductoContext.Provider>)
 };

@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ProductoProvider } from './src/context/ProductoProvider';
 import { Productos } from './src/screen/Productos';
 import { PedidoScreen } from './src/screen/Pedido';
+import { Pagar } from './src/screen/Pagar';
 
 
 const Stack = createNativeStackNavigator();
@@ -23,7 +24,8 @@ const App = () => {
             initialRouteName="Inicio">
             <Stack.Screen name="Inicio" component={Inicio} />
             <Stack.Screen name="Productos" component={Productos} />
-            <Stack.Screen name="Pedido" component={PedidoScreen} />
+            <Stack.Screen name="Pedido" component={PedidoScreen} /> 
+            <Stack.Screen name="Pagar" component={Pagar} /> 
           </Stack.Navigator>
         </SafeAreaView>
       </NavigationContainer>
