@@ -1,5 +1,5 @@
 import React from 'react'
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, StatusBar } from 'react-native';
 import { Inicio } from './src/screen/Inicio';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -16,7 +16,8 @@ const App = () => {
 
     <ProductoProvider>
       <NavigationContainer>
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor:'#0D3084' }}>
+          <StatusBar backgroundColor='#0D3084'/>
           <Stack.Navigator
             screenOptions={{
               headerShown: false
