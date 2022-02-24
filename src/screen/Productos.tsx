@@ -1,12 +1,14 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useContext, useState } from 'react'
-import { Text, View, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react'
+import { Text, View, TouchableOpacity, ScrollView, TextInput, ActivityIndicator } from 'react-native';
 import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
 import { ProductoContext } from '../context/ProductoContext';
 import { HookProductos } from '../hook/HookProductos';
 import * as Progress from 'react-native-progress';
 import { SearchBar } from 'react-native-elements';
+import productos from '../api/endpoint/Endpoint';
+import { JSONProductos, dataProducto } from '../interfaces/productosInterfaces';
 
 interface Props extends NativeStackScreenProps<any, any> {
 }
@@ -17,35 +19,23 @@ export const Productos = ({ navigation }: Props) => {
 
     console.log(pedidoState);
 
-    const datosproducto = [{
-        id: '1',
-        nombre: ' Pepsi 2LT paquete de 6 UND',
-        precio: 2
-    }, {
-        id: '2',
-        nombre: ' Doritos XXL caja de 12 UND',
-        precio: 0.5
-    },
-    {
-        id: '3',
-        nombre: ' Mantequilla 1 Kg caja de 12 UND',
-        precio: 1.5
-    },
-    {
-        id: '4',
-        nombre: ' Platanito 120 gr caja de 20 UND',
-        precio: 1.5
-    },
-    {
-        id: '5',
-        nombre: ' Harina 1KG bolsa de 20 UND',
-        precio: 1.5
-    },
-    {
-        id: '6',
-        nombre: ' Compota caja de 30 UND',
-        precio: 1.5
-    }]
+     const [datosproducto, setdatosproducto] = useState<dataProducto[]>([])
+    const [isLoading, setisLoading] = useState(true)
+
+    useEffect(() => {
+      
+        productos.get<JSONProductos>('/productos').then(resp => {
+            console.log(resp.data)
+            setdatosproducto(resp.data.productos);
+            setfilterDataProducto(resp.data.productos);
+
+            setisLoading(false);
+        })
+
+
+   
+    }, [])
+    
 
     const { restarProducto,
         sumarProducto,
@@ -54,54 +44,23 @@ export const Productos = ({ navigation }: Props) => {
 
 
     const [search, setsearch] = useState('');
-    const [filterdData, setfilterdData] = useState({});
-    const [dataProducto, setdataProducto] = useState([
-        {
-            id: '1',
-            nombre: ' Pepsi 2LT paquete de 6 UND',
-            precio: 2
-        }, {
-            id: '2',
-            nombre: ' Doritos XXL caja de 12 UND',
-            precio: 0.5
-        },
-        {
-            id: '3',
-            nombre: ' Mantequilla 1 Kg caja de 12 UND',
-            precio: 1.5
-        },
-        {
-            id: '4',
-            nombre: ' Platanito 120 gr caja de 20 UND',
-            precio: 1.5
-        },
-        {
-            id: '5',
-            nombre: ' Harina 1KG bolsa de 20 UND',
-            precio: 1.5
-        },
-        {
-            id: '6',
-            nombre: ' Compota caja de 30 UND',
-            precio: 1.5
-        }
-    ]);
+
+    const [filterDataProducto, setfilterDataProducto] = useState<dataProducto[]>();
 
 
 
     const searchFilter = (text: string) => {
         if (text) {
-            const productoBuscado = datosproducto.filter((item) => {
+            const productoBuscado = datosproducto?.filter((item) => {
                 const itemSelec = item.nombre ? item.nombre.toUpperCase() : ''.toUpperCase();
                 const textData = text.toUpperCase();
                 return itemSelec.indexOf(textData) > -1;
             });
-            setfilterdData(productoBuscado);
             setsearch(text);
-            setdataProducto(productoBuscado)
+            setfilterDataProducto(productoBuscado)
             
         } else {
-            setdataProducto(datosproducto);
+            setfilterDataProducto(datosproducto);
             setsearch(text);
         }
     }
@@ -117,15 +76,22 @@ export const Productos = ({ navigation }: Props) => {
                         value={search}
                         onChangeText={(text) => searchFilter(text)} />
                 </View>
+
+                {isLoading ?
+                
+                < View style={{flex:1, justifyContent:'center',alignContent:'center'}}>
+                    <ActivityIndicator color="blue" size={50} />
+                </View>
+
+                :
+                
                 <ScrollView style={{ backgroundColor: 'white' }}>
-                    {dataProducto.map((user) => (
+                    {filterDataProducto?.map((user) => (
                         <Producto key={user.id} restarProducto={restarProducto} sumarProducto={sumarProducto} datos={user} producto={user} />
                     ))}
-
-
-
-
                 </ScrollView>
+            }
+                
             </View>
             <View style={{ flexDirection: 'row', flex: 0.1 }}>
 
@@ -146,19 +112,6 @@ export const Productos = ({ navigation }: Props) => {
                         </View>
                     </View>
                 </TouchableOpacity>
-
-                {/* <TouchableOpacity style={{ flex: 0.2 }}  onPress={() => navigation.navigate('Pagar')}>
-                    <View style={{
-                        elevation: 10,
-                        shadowColor: 'black',
-                        flex: 1,  borderTopEndRadius: 10, borderTopStartRadius: 10, justifyContent: 'center', alignItems: 'center',
-                        backgroundColor : '#0D3084' 
-                    }}>
-                        <View style={{ flexDirection: 'row'}}>
-                            <Text style={{ color: 'white', fontSize: 18 }}>Pagar </Text>
-                        </View>
-                    </View>
-                </TouchableOpacity> */}
             </View>
 
 

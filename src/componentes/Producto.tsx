@@ -3,12 +3,13 @@ import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { ProductoContext } from '../context/ProductoContext';
 import { Pedido } from '../interfaces/interfaces';
+import { dataProducto } from '../interfaces/productosInterfaces';
 
 interface Props {
     restarProducto?: Function
     sumarProducto?: Function
     cantidadProductos?: Array<{ producto: string, cantidad: number, precio: number }>
-    producto: { id: string, nombre: string, cantidad?: number, precio: number }
+    producto: dataProducto
     datos?: { nombre: string, precio: number }
 }
 
