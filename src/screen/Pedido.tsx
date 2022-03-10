@@ -26,6 +26,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
     const [visibleDatos, setVisibleDatos] = useState(false);
     const [visibleBiometrico, setVisibleBiometrico] = useState(false);
 
+
     const toggleDatos = () => {
         setVisibleBiometrico(!visibleBiometrico);
 
@@ -43,6 +44,14 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
         navigation.navigate('Pagar');
     };
 
+    const montoMinimo = (monto : number) =>  {
+        monto =  Math.round((monto + Number.EPSILON) * 100) / 100;
+        console.log(monto)
+        if (monto > 50) {
+            return 'Ha alcanzado el monto minimo para realizar la compra'
+        } else  {
+            return `Te faltan ${50 - monto} para que tu pedido sea procesado`}
+    }
 
 
     return (<>
@@ -74,11 +83,11 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
             }}>
                 <View style={{ borderColor: '#96F3CF', borderWidth: 3, padding: 3, borderRadius: 10 }}>
 
-                    <Text style={{ color: '#0D3084', fontSize: 12 }} >Te faltan {50 - pedidoState.total}$ para que tu pedido sea procesado</Text>
+                    <Text style={{ color: '#0D3084', fontSize: 12 }} >{montoMinimo(pedidoState.total)}</Text>
                     <View style={{ flexDirection: 'row', marginVertical: 10 }}>
                         <Text style={{ color: '#0D3084', fontSize: 12, marginHorizontal: 5 }}> Total </Text>
                         <Progress.Bar progress={((pedidoState.total / 50))} width={150} height={15} />
-                        <Text style={{ color: '#0D3084', fontSize: 12 }}>  {pedidoState.total}$ </Text>
+                        <Text style={{ color: '#0D3084', fontSize: 12 }}>  {Math.round((pedidoState.total + Number.EPSILON) * 100) / 100}$ </Text>
                         {/* <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> - </Text>
                         <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {pedidoState.total} </Text> */}
                     </View>
@@ -110,8 +119,8 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
                         height: 40,
                         marginBottom: 10
                     }}
+                    secureTextEntry
                     placeholder=" Contraseña"
-                    keyboardType="numeric"
                 />
                 <TouchableOpacity onPress={irapagar} style={{ width: '100%', height: 35, backgroundColor: '#0D3084', borderRadius: 10, alignSelf: 'center', alignItems: 'center', marginVertical: 17 }}>
                     <Text style={{ fontSize: 20, fontWeight: '400', color: 'white', alignItems: 'center' }}>Ingresar</Text>

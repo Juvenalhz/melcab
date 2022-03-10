@@ -93,14 +93,14 @@ export const Inicio = ({ navigation, route }: Props) => {
                 <View style={{
                     elevation: 10,
                     shadowColor: 'black',
-                    flex: 1, backgroundColor: "white", borderTopEndRadius: 10, borderTopStartRadius: 10, justifyContent: 'center', alignItems: 'center'
+                    flex: 1, borderTopEndRadius: 10, backgroundColor:'#EEEEEE', borderTopStartRadius: 10, justifyContent: 'center', alignItems: 'center'
 
                 }}>
                     <View style={{ flexDirection: 'column' }}>
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={{ color: '#0D3084', fontSize: 18 }}> TOTAL </Text>
                         <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> - </Text>
-                        <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {pedidoState.total} </Text>
+                        <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {Math.round((pedidoState.total + Number.EPSILON) * 100) / 100} </Text>
                     </View>
                     <Text style={{ color: '#0D3084', fontSize: 12, alignSelf:'center' }}> Ver Pedido </Text>
                     </View>

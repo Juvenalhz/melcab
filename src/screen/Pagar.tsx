@@ -190,7 +190,7 @@ export const Pagar = ({ navigation }: Props) => {
       <View style={{ flexDirection: 'row' }}>
         <Text style={{ color: '#0D3084', fontSize: 18 }}>TOTAL </Text>
         <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> - </Text>
-        <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {pedidoState.total} </Text>
+        <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {Math.round((pedidoState.total + Number.EPSILON) * 100) / 100} </Text>
       </View>
     </View>
 

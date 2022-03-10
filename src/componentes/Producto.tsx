@@ -9,7 +9,7 @@ interface Props {
     restarProducto?: Function
     sumarProducto?: Function
     cantidadProductos?: Array<{ producto: string, cantidad: number, precio: number }>
-    producto: dataProducto
+    producto: Pedido
     datos?: { nombre: string, precio: number }
 }
 
