@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React, { useContext } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { AppBar } from '../componentes/AppBar'
