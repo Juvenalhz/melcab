@@ -12,9 +12,10 @@ import { Card } from 'react-native-elements/dist/card/Card';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBrain, faCoffee, faFingerprint } from '@fortawesome/free-solid-svg-icons'
+import { DrawerScreenProps } from '@react-navigation/drawer';
 
 
-interface Props extends NativeStackScreenProps<any, any> {
+interface Props extends DrawerScreenProps<any, any> {
 }
 
 
@@ -44,13 +45,14 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
         navigation.navigate('Pagar');
     };
 
-    const montoMinimo = (monto : number) =>  {
-        monto =  Math.round((monto + Number.EPSILON) * 100) / 100;
+    const montoMinimo = (monto: number) => {
+        monto = Math.round((monto + Number.EPSILON) * 100) / 100;
         console.log(monto)
         if (monto > 50) {
             return 'Ha alcanzado el monto minimo para realizar la compra'
-        } else  {
-            return `Te faltan ${50 - monto} para que tu pedido sea procesado`}
+        } else {
+            return `Te faltan ${50 - monto} para que tu pedido sea procesado`
+        }
     }
 
 
@@ -128,7 +130,9 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
                 <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 15 }}>
                     <Text style={{ fontSize: 16, fontWeight: '300', color: '#0D3084', alignItems: 'center' }}>¿No tienes cuenta?</Text>
-                    <Text style={{ fontSize: 16, fontWeight: '500', color: '#0D3084', alignItems: 'center' }}> Registrate aquí</Text>
+                    <TouchableOpacity onPress={() => { navigation.navigate('Registro') }}>
+                        <Text style={{ fontSize: 16, fontWeight: '500', color: '#0D3084', alignItems: 'center' }}> Registrate aquí</Text>
+                    </TouchableOpacity>
                 </View>
 
             </View>
@@ -143,7 +147,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
             <View style={{ flex: 1, justifyContent: 'flex-start', marginHorizontal: 10, }}>
                 <FontAwesomeIcon icon={faFingerprint} size={50} color={'#0D3084'} style={{ alignSelf: 'center' }} />
-                <Text style={{ fontSize: 16, fontWeight: '300', color: '#0D3084',  alignSelf: 'center', marginVertical: 15 }}>Autenticación Biométrica</Text>
+                <Text style={{ fontSize: 16, fontWeight: '300', color: '#0D3084', alignSelf: 'center', marginVertical: 15 }}>Autenticación Biométrica</Text>
 
                 <TouchableOpacity onPress={toggleDatos} style={{ width: '100%', height: 35, backgroundColor: '#0D3084', borderRadius: 10, alignSelf: 'center', alignItems: 'center', marginVertical: 10 }}>
                     <Text style={{ fontSize: 18, fontWeight: '400', color: 'white', alignSelf: 'center' }}>Acceder con contraseña</Text>
@@ -151,7 +155,9 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
                 <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 5 }}>
                     <Text style={{ fontSize: 16, fontWeight: '300', color: '#0D3084', alignItems: 'center' }}>¿No tienes cuenta?</Text>
-                    <Text style={{ fontSize: 16, fontWeight: '500', color: '#0D3084', alignItems: 'center' }}> Registrate aquí</Text>
+                    <TouchableOpacity onPress={() => { navigation.navigate('Registro') }}>
+                        <Text style={{ fontSize: 16, fontWeight: '500', color: '#0D3084', alignItems: 'center' }}> Registrate aquí</Text>
+                    </TouchableOpacity>
                 </View>
 
             </View>

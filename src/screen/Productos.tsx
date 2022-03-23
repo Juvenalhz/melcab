@@ -9,8 +9,9 @@ import * as Progress from 'react-native-progress';
 import { SearchBar } from 'react-native-elements';
 import productos from '../api/endpoint/Endpoint';
 import { JSONProductos, dataProducto } from '../interfaces/productosInterfaces';
+import { DrawerScreenProps } from '@react-navigation/drawer';
 
-interface Props extends NativeStackScreenProps<any, any> {
+interface Props extends DrawerScreenProps<any, any> {
 }
 
 export const Productos = ({ navigation }: Props) => {

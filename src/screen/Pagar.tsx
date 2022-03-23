@@ -9,8 +9,9 @@ import { ProductoContext } from '../context/ProductoContext';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCopy, faPaste } from '@fortawesome/free-regular-svg-icons';
+import { DrawerScreenProps } from '@react-navigation/drawer';
 
-interface Props extends NativeStackScreenProps<any, any> {
+interface Props extends DrawerScreenProps<any, any> {
 }
 
 

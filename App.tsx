@@ -9,6 +9,8 @@ import { Productos } from './src/screen/Productos';
 import { PedidoScreen } from './src/screen/Pedido';
 import { Pagar } from './src/screen/Pagar';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { DrawerContenido } from './src/componentes/DrawerContainer';
+import { Registro } from './src/screen/Registro';
 
 
 
@@ -22,13 +24,13 @@ const App = () => {
       <NavigationContainer>
         <SafeAreaView style={{ flex: 1, backgroundColor: '#0D3084' }}>
           <StatusBar backgroundColor='#0D3084' />
-          <Drawer.Navigator initialRouteName='Inicio'>
+          <Drawer.Navigator initialRouteName='Inicio' screenOptions={{headerShown: false}} drawerContent={(props) => <DrawerContenido {...props}/>}>
             <Drawer.Screen name="Inicio" component={Inicio} />
             <Drawer.Screen name="Productos" component={Productos} />
-            <Drawer.Screen name="PedidoScreen" component={PedidoScreen} />
+            <Drawer.Screen name="Pedido" component={PedidoScreen} />
             <Drawer.Screen name="Pagar" component={Pagar} />
+            <Drawer.Screen name="Registro" component={Registro} />
           </Drawer.Navigator>
-
         </SafeAreaView>
       </NavigationContainer>
     </ProductoProvider>
@@ -37,5 +39,6 @@ const App = () => {
 
   )
 }
+
 export default App;
 

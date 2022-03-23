@@ -7,11 +7,12 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ProductoProvider } from '../context/ProductoProvider';
 import { useWindowDimensions } from 'react-native';
 import { ProductoContext } from '../context/ProductoContext';
+import { DrawerScreenProps } from '@react-navigation/drawer';
 
 
 
 
-interface Props extends NativeStackScreenProps<any, any> {
+interface Props extends DrawerScreenProps<any, any> {
 }
 
 export const Inicio = ({ navigation, route }: Props) => {
@@ -21,7 +22,7 @@ export const Inicio = ({ navigation, route }: Props) => {
 
         <>
             {/* appbar */}
-            <AppBar titulo={'Planeta Dulce'} />
+            <AppBar titulo={'Planeta Dulce'} navigation={navigation} route={route} />
 
 
             {/* body */}
