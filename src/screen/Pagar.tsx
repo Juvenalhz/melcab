@@ -15,7 +15,7 @@ interface Props extends DrawerScreenProps<any, any> {
 }
 
 
-export const Pagar = ({ navigation }: Props) => {
+export const Pagar = ({ navigation, route }: Props) => {
 
 
 
@@ -85,7 +85,7 @@ export const Pagar = ({ navigation }: Props) => {
     console.log(JSON.stringify(cuentaSeleccionada));
   }
   return (<>
-    <AppBar titulo='Proceso de Pago' />
+    <AppBar titulo='Proceso de Pago' navigation={navigation} route={route} />
     <ScrollView style={{ flex: 1 }}>
 
       <View style={{ marginVertical: 30 }} >

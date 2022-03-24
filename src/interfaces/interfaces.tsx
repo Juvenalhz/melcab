@@ -16,11 +16,17 @@ token: string;
 
 }
 export interface Usuario {
-rol: string;
-estado: boolean;
-google: boolean;
-nombre: string;
-correo: string;
-uid: string;
-img?: string;
+    id: number,
+    nombre: string,
+    email: string,
+    direccion: string,
+    tlf: string,
+    tn: string | null,
+    imagen?: string | null,
+    cuandrante: 1,
+    pass: string,
+    codigo_aprobacion: string,
+    user: string,
+    aprobado: number
 }
+
