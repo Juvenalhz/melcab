@@ -10,7 +10,7 @@ interface Props {
     sumarProducto?: Function
     cantidadProductos?: Array<{ producto: string, cantidad: number, precio: number }>
     producto: Pedido
-    datos?: { nombre: string, precio: number }
+    datos?: { nombre: string, precio: number, id: number }
 }
 
 export const Producto = ({ datos, producto }: Props) => {
@@ -22,7 +22,7 @@ export const Producto = ({ datos, producto }: Props) => {
     return <>
         <View style={{ flexDirection: 'row', height: 115, marginHorizontal: 10, marginVertical: 10 }}>
             <View style={{ backgroundColor: '#BFBFBF', width: 115, height: 115, borderRadius: 10 }}>
-                <Image style={{ width: 120, height: 120, marginBottom: 15 }} source={require('../../utils/logosbancos/trululu.jpg')} />
+                <Image style={{ width: 120, height: 120, marginBottom: 15 }}  source={{ uri: 'http://192.168.1.224:9000/' + datos?.id + 'prod-planetadulce.png' }} />
             </View>
 
             <View style={{  flexDirection: 'column', justifyContent: 'flex-end', flex: 1, marginHorizontal: 20, marginVertical: 15 }}>

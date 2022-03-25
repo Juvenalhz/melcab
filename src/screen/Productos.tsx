@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { Component, useContext, useEffect, useState } from 'react'
 import { Text, View, TouchableOpacity, ScrollView, TextInput, ActivityIndicator } from 'react-native';
 import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
@@ -7,36 +7,35 @@ import { ProductoContext } from '../context/ProductoContext';
 import { HookProductos } from '../hook/HookProductos';
 import * as Progress from 'react-native-progress';
 import { SearchBar } from 'react-native-elements';
-import productos from '../api/endpoint/Endpoint';
 import { JSONProductos, dataProducto } from '../interfaces/productosInterfaces';
 import { DrawerScreenProps } from '@react-navigation/drawer';
+import api from '../api/endpoint/Endpoint';
 
 interface Props extends DrawerScreenProps<any, any> {
 }
 
-export const Productos = ({ navigation }: Props) => {
+export const Productos = ({ navigation, route }: Props) => {
+
 
     const { pedidoState, addPedido } = useContext(ProductoContext);
 
     console.log(pedidoState);
 
-     const [datosproducto, setdatosproducto] = useState<dataProducto[]>([])
+    const [datosproducto, setdatosproducto] = useState<dataProducto[]>([])
     const [isLoading, setisLoading] = useState(true)
 
     useEffect(() => {
-      
-        productos.get<JSONProductos>('/productos').then(resp => {
+        setisLoading(true);
+        api.get<JSONProductos>('/marcas/' + route.params?.marcaid).then(resp => {
             console.log(resp.data)
             setdatosproducto(resp.data.productos);
             setfilterDataProducto(resp.data.productos);
 
             setisLoading(false);
         })
-
+    }, [route.params?.marcaid])
 
    
-    }, [])
-    
 
     const { restarProducto,
         sumarProducto,
@@ -68,7 +67,7 @@ export const Productos = ({ navigation }: Props) => {
 
     return (
         <>
-            <AppBar titulo='Planeta Dulce' />
+            <AppBar titulo='Planeta Dulce' navigation={navigation} route={route} />
             <View style={{ flex: 1 }}>
                 <View>
                     <TextInput style={{ height: 40, borderWidth: 1, paddingLeft: 20, margin: 5, borderColor: '#009688', backgroundColor: 'white', borderRadius: 10 }}

@@ -1,12 +1,24 @@
 import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-navigation/drawer'
-import React from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { Keyboard, StyleSheet, Text, TextInput, View } from 'react-native'
 import { Image } from 'react-native-elements'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons';
+import { AuthContext } from '../context/AuthContext';
 
 export const DrawerContenido = ({navigation}: DrawerContentComponentProps) => {
+  const {login} = useContext(AuthContext);
+
+  const [user, setuser] = useState('');
+  const [pass, setpass] = useState('');
+
+  const onLogin = () => {
+    console.log({user, pass});
+    Keyboard.dismiss();
+    login({user,pass});
+  }
   return (
+
 
     <DrawerContentScrollView style={{ flex: 1, backgroundColor: '#f0f8ff' }}>
 
@@ -77,9 +89,11 @@ export const DrawerContenido = ({navigation}: DrawerContentComponentProps) => {
             borderWidth: 1.5,
             borderRadius: 15,
             height: 40,
-            marginBottom: 15
+            marginBottom: 15,
           }}
           placeholder=" Usuario"
+          onChangeText={(e) => setuser(e)}
+          value={user}
         />
 
         <TextInput
@@ -93,8 +107,10 @@ export const DrawerContenido = ({navigation}: DrawerContentComponentProps) => {
           }}
           secureTextEntry
           placeholder=" Contraseña"
+          onChangeText={(e) => setpass(e)}
+          value={pass}
         />
-        <TouchableOpacity onPress={() => { }} style={{ width: '100%', height: 35, backgroundColor: '#0D3084', borderRadius: 10, alignSelf: 'center', alignItems: 'center', marginVertical: 17 }}>
+        <TouchableOpacity onPress={onLogin} style={{ width: '100%', height: 35, backgroundColor: '#0D3084', borderRadius: 10, alignSelf: 'center', alignItems: 'center', marginVertical: 17 }}>
           <Text style={{ fontSize: 20, fontWeight: '400', color: 'white', alignItems: 'center' }}>Ingresar</Text>
         </TouchableOpacity>
 
@@ -127,3 +143,4 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
 });
+

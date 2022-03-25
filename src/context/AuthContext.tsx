@@ -1,7 +1,8 @@
 import React, { createContext } from 'react';
-import { Usuario } from '../interfaces/interfaces';
+import { LoginData, LoginResponse, Usuario } from '../interfaces/interfaces';
 import { useReducer } from 'react';
 import { authReducer, AuthState } from './authReducer';
+import api from '../api/endpoint/Endpoint';
 
 
 
@@ -11,7 +12,7 @@ type AuthContextProps = {
     user: Usuario | null,
     status: string|'checking' | 'authenticated-cliente' | 'authenticated-delivery' | 'not-authenticated';
     registro: () => void;
-    login: () => void;
+    login: ( loginData : LoginData ) => void;
     logOut: () => void;
     removeError: () => void;
 }
@@ -26,13 +27,25 @@ const authInicialState: AuthState = {
 
 export const AuthContext = createContext({} as AuthContextProps);
 
+interface props {
+    children: JSX.Element | JSX.Element[]
+}
 
 
-export const AuthProvider = (children: JSX.Element | JSX.Element[]) => {
+export const AuthProvider = ({children} : props) => {
     const [state, dispatch] = useReducer(authReducer, authInicialState)
 
+    const login = async({user, pass} : LoginData) => {
+
+        try {
+            const resp = await api.post<LoginResponse>('/login', {user, pass});
+            console.log(resp.data);
+        } catch (error) {
+            
+        }
+
+    };
     const registro = () => {};
-    const login = () => {};
     const logOut = () => {};
     const removeError = () => {};
 
