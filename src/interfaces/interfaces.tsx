@@ -27,11 +27,21 @@ export interface Usuario {
     pass: string,
     codigo_aprobacion: string,
     user: string,
-    aprobado: number
+    aprobado: number,
+    tipouser: number
 }
 
 export interface LoginData {
     user: string,
     pass: string
+}
+
+export interface RegisterData {
+    name: string ,
+    user: string,
+    pass: string
+    email: string,
+    tlf: string,
+    direccion: string,
 }
 

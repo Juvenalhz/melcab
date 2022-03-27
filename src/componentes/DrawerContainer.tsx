@@ -1,13 +1,13 @@
 import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-navigation/drawer'
-import React, { useContext, useState } from 'react'
-import { Keyboard, StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { Keyboard, StyleSheet, Text, TextInput, View, Alert } from 'react-native';
 import { Image } from 'react-native-elements'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../context/AuthContext';
 
 export const DrawerContenido = ({navigation}: DrawerContentComponentProps) => {
-  const {login} = useContext(AuthContext);
+  const {login, removeError, errorMessage} = useContext(AuthContext);
 
   const [user, setuser] = useState('');
   const [pass, setpass] = useState('');
@@ -17,6 +17,20 @@ export const DrawerContenido = ({navigation}: DrawerContentComponentProps) => {
     Keyboard.dismiss();
     login({user,pass});
   }
+
+  useEffect(() => {
+    if (errorMessage.length === 0) return;
+
+    Alert.alert('Login incorrecto',
+    errorMessage, [
+      
+      {
+        text: 'Ok',
+        onPress:  () => {removeError} 
+      }
+    ])
+  }, [errorMessage])
+  
   return (
 
 
