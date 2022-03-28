@@ -34,12 +34,12 @@ export const Inicio = ({ navigation, route }: Props) => {
 
     const [marcasMelcab, setmarcasMelcab] = useState<marcas>()
 
-    useEffect(() => {
-        api.get('/marcas').then(resp => {
-            console.log(resp.data)
-            setmarcasMelcab(resp.data);
-        })
-    }, [])
+    // useEffect(() => {
+    //     api.get('/marcas').then(resp => {
+    //         console.log(resp.data)
+    //         setmarcasMelcab(resp.data);
+    //     })
+    // }, [])
 
     return (
 
@@ -63,7 +63,7 @@ export const Inicio = ({ navigation, route }: Props) => {
 
                     <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
 
-                        {marcasMelcab?.marcas.map((marca) => (
+                        {/* {marcasMelcab?.marcas.map((marca) => (
                             <>
                                 <View key={marca.id}>
                                     <TouchableOpacity style={styles.btnCategoria}
@@ -73,7 +73,7 @@ export const Inicio = ({ navigation, route }: Props) => {
                                 <Text style={styles.texto}>{marca.nombre}</Text>
                                 </View>
                             </>
-                        ))}
+                        ))} */}
 
 
 

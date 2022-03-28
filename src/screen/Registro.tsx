@@ -131,7 +131,10 @@ export const Registro = () => {
 
 
                     <TouchableOpacity onPress={() => {
-                        registro({user, pass, name, tlf, email, direccion});
+
+                        registro({user, pass, name, tlf, email, direccion}
+                            
+                            );
                      }} style={{ width: '80%', height: 35, backgroundColor: '#0D3084', borderRadius: 10, alignSelf: 'center', alignItems: 'center', marginVertical: 17 }}
                         
                     >

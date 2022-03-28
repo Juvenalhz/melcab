@@ -11,7 +11,7 @@ export interface TotalPedido {
 }
 
 export interface LoginResponse {
-usuario: Usuario;
+usuarios: Usuario;
 token: string;
 
 }

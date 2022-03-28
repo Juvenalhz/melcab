@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
 import { ProductoContext } from '../context/ProductoContext';
@@ -13,6 +13,7 @@ import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBrain, faCoffee, faFingerprint } from '@fortawesome/free-solid-svg-icons'
 import { DrawerScreenProps } from '@react-navigation/drawer';
+import { Login } from '../componentes/Login';
 
 
 interface Props extends DrawerScreenProps<any, any> {
@@ -57,7 +58,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
 
     return (<>
-        <AppBar titulo={'Su Pedido'} />
+        <AppBar titulo={'Su Pedido'} navigation={navigation} route={route} />
         <View style={{ flex: 1 }}>
             <ScrollView style={{ backgroundColor: 'white' }}>
                 {pedidoState.pedidos.map((e: Pedido) => (
@@ -98,47 +99,10 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
         </TouchableOpacity>
 
         <Overlay isVisible={visibleDatos} onBackdropPress={toggleDatos} overlayStyle={{ width: '90%', height: '50%', borderRadius: 20 }} >
-            <Text style={[styles.textPrimary, { color: '#0D3084', marginTop: 40, marginBottom: 25 }]}>Iniciar Sesion</Text>
-            <View style={{ flex: 1, justifyContent: 'flex-start', marginHorizontal: 10, }}>
-                <TextInput
-                    style={{
-                        flex: 0.20,
-                        borderColor: '#0D3084',
-                        borderWidth: 1.5,
-                        borderRadius: 15,
-                        height: 40,
-                        marginBottom: 15
-                    }}
-                    placeholder=" Usuario"
-                />
+            <KeyboardAvoidingView style={{flex:1}} behavior="position"  keyboardVerticalOffset={32}>
 
-                <TextInput
-                    style={{
-                        flex: 0.20,
-                        borderColor: '#0D3084',
-                        borderWidth: 1.5,
-                        borderRadius: 15,
-                        height: 40,
-                        marginBottom: 10
-                    }}
-                    secureTextEntry
-                    placeholder=" Contraseña"
-                />
-                <TouchableOpacity onPress={irapagar} style={{ width: '100%', height: 35, backgroundColor: '#0D3084', borderRadius: 10, alignSelf: 'center', alignItems: 'center', marginVertical: 17 }}>
-                    <Text style={{ fontSize: 20, fontWeight: '400', color: 'white', alignItems: 'center' }}>Ingresar</Text>
-                </TouchableOpacity>
-
-                <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 15 }}>
-                    <Text style={{ fontSize: 16, fontWeight: '300', color: '#0D3084', alignItems: 'center' }}>¿No tienes cuenta?</Text>
-                    <TouchableOpacity onPress={() => { navigation.navigate('Registro') }}>
-                        <Text style={{ fontSize: 16, fontWeight: '500', color: '#0D3084', alignItems: 'center' }}> Registrate aquí</Text>
-                    </TouchableOpacity>
-                </View>
-
-            </View>
-
-
-
+                <Login navigation={navigation} route={route} />
+            </KeyboardAvoidingView>
         </Overlay>
 
         <Overlay isVisible={visibleBiometrico} onBackdropPress={toggleBiometrico} overlayStyle={{ width: '90%', height: '40%', borderRadius: 20 }} >
@@ -161,6 +125,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
                 </View>
 
             </View>
+
 
 
 
