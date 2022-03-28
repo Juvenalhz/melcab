@@ -11,8 +11,8 @@ interface Props extends DrawerScreenProps<any, any> {
 export const AppBar = ({ titulo, navigation }: Props) => {
     return (
 
-        <View style={{
-            flex: 0.06, backgroundColor: "#0D3084", borderBottomEndRadius: 10, borderBottomStartRadius: 10, justifyContent: 'center', flexDirection: 'row'
+        <View style={{ height: 40
+           , backgroundColor: "#0D3084", borderBottomEndRadius: 10, borderBottomStartRadius: 10, justifyContent: 'center', flexDirection: 'row'
         }}>
 
 

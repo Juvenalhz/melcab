@@ -25,7 +25,7 @@ export const Registro = () => {
             >
 
 
-                <ScrollView contentContainerStyle={{ justifyContent: 'center', flex: 1 }}>
+                <ScrollView contentContainerStyle={{ justifyContent: 'center' }}>
                     <Text style={{ fontSize: 30, marginHorizontal: 30, marginVertical: 20 }}> Crear Cuenta </Text>
 
 

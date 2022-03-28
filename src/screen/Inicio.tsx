@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useContext, useEffect, useState } from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { AppBar } from '../componentes/AppBar'
 import { Categorias } from '../componentes/Categorias'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -9,6 +9,7 @@ import { useWindowDimensions } from 'react-native';
 import { ProductoContext } from '../context/ProductoContext';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import api from '../api/endpoint/Endpoint';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 
@@ -27,6 +28,8 @@ interface marca {
 }
 
 export const Inicio = ({ navigation, route }: Props) => {
+
+    const window = Dimensions.get("window");
 
 
     const { pedidoState, addPedido } = useContext(ProductoContext);
@@ -50,23 +53,26 @@ export const Inicio = ({ navigation, route }: Props) => {
 
 
             {/* body */}
-            <View style={{ flex: 1, backgroundColor: "#fff" }}>
+            <ScrollView style={{ flex: 1 }}>
+                <View style={{ flex: 1, backgroundColor: "#fff" }}>
 
 
-                {/* slider */}
-                <View style={{ flex: 0.60, backgroundColor: "#BFBFBF" }}>
-                    <Image style={{ width: '100%', marginBottom: 15, height: '100%' }} source={require('../../utils/logosbancos/LogoPlaneta_Final.jpg')} />
-                </View>
+                    {/* slider */}
+                    <View style={{ height: (window.height * 0.40), backgroundColor: "#BFBFBF" }}>
+                        <Image style={{ width: '100%', marginBottom: 15, height: '100%' }} source={require('../../utils/logosbancos/LogoPlaneta_Final.jpg')} />
+                    </View>
 
-                {/* Categorias */}
-                <View style={{ flex: 1, flexDirection: "column" }}>
+                    
 
-                    <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
+                    {/* Categorias */}
+                    <View style={{ flex: 1, flexDirection: "column" }}>
 
-                        {/* {marcasMelcab?.marcas.map((marca) => (
+                        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
+
+                            {/* {marcasMelcab?.marcas.map((marca) => (
                             <>
                                 <View key={marca.id}>
-                                    <TouchableOpacity style={styles.btnCategoria}
+                                <TouchableOpacity style={styles.btnCategoria}
                                         onPress={() => navigation.navigate('Productos', { marcaid: marca.id })}>
                                         <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={{ uri: 'http://192.168.1.224:9000/' + marca.id + 'marcas-planetadulce.png' }} />
                                     </TouchableOpacity>
@@ -78,13 +84,13 @@ export const Inicio = ({ navigation, route }: Props) => {
 
 
 
-                        {/* <Categorias titulo='PEPSICO' navigation={navigation} route={route} pathw={"'../../utils/logosbancos/pepsico.png'"} />
+                            {/* <Categorias titulo='PEPSICO' navigation={navigation} route={route} pathw={"'../../utils/logosbancos/pepsico.png'"} />
 
                         <Categorias titulo='COLOMBINA' navigation={navigation} route={route} pathw={"'../../utils/logosbancos/pepsico.png'"}/> */}
-                    </View>
+                        </View>
 
-                    <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
-                        {/* <View>
+                        <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
+                            {/* <View>
                             <TouchableOpacity style={styles.btnCategoria}
                                 onPress={() => navigation.navigate('Productos')}>
                                 <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={require('../../utils/logosbancos/nabisco.png')} />
@@ -93,19 +99,20 @@ export const Inicio = ({ navigation, route }: Props) => {
                         </View>
 
                         <View>
-                            <TouchableOpacity style={styles.btnCategoria}
+                        <TouchableOpacity style={styles.btnCategoria}
                                 onPress={() => navigation.navigate('Productos')}>
                                 <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={require('../../utils/logosbancos/super.png')} />
-                            </TouchableOpacity>
+                                </TouchableOpacity>
                             <Text style={styles.texto}>SUPER</Text>
                         </View> */}
-                        {/* <Categorias titulo='NABISCO' navigation={navigation} route={route} pathw={"'../../utils/logosbancos/pepsico.png'"} />
+                            {/* <Categorias titulo='NABISCO' navigation={navigation} route={route} pathw={"'../../utils/logosbancos/pepsico.png'"} />
 
                         <Categorias titulo='SUPER' navigation={navigation} route={route} pathw={"'../../utils/logosbancos/pepsico.png'"} /> */}
 
+                        </View>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
 
             {/* bottom */}
             {/* <View style={{
@@ -141,9 +148,9 @@ export const Inicio = ({ navigation, route }: Props) => {
                 }}>
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={{ color: 'white', fontSize: 18 }}>Pagar </Text>
-                    </View>
-                </View>
-            </TouchableOpacity> */}
+                        </View>
+                        </View>
+                    </TouchableOpacity> */}
             </View>
 
         </>

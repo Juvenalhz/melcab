@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
 import { ProductoContext } from '../context/ProductoContext';
@@ -22,6 +22,9 @@ interface Props extends DrawerScreenProps<any, any> {
 
 
 export const PedidoScreen = ({ route, navigation }: Props) => {
+
+    const window = Dimensions.get("window");
+
 
     const { pedidoState, addPedido } = useContext(ProductoContext);
 
@@ -98,14 +101,15 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
             </View>
         </TouchableOpacity>
 
-        <Overlay isVisible={visibleDatos} onBackdropPress={toggleDatos} overlayStyle={{ width: '90%', height: '50%', borderRadius: 20 }} >
-            <KeyboardAvoidingView style={{flex:1}} behavior="position"  keyboardVerticalOffset={32}>
-
-                <Login navigation={navigation} route={route} />
+        <Overlay isVisible={visibleDatos} onBackdropPress={toggleDatos} overlayStyle={{ width: '90%', height: (window.height * 0.50), borderRadius: 20 }} >
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior="position" keyboardVerticalOffset={32}>
+                <ScrollView>
+                    <Login navigation={navigation} route={route} />
+                </ScrollView>
             </KeyboardAvoidingView>
         </Overlay>
 
-        <Overlay isVisible={visibleBiometrico} onBackdropPress={toggleBiometrico} overlayStyle={{ width: '90%', height: '40%', borderRadius: 20 }} >
+        <Overlay isVisible={visibleBiometrico} onBackdropPress={toggleBiometrico} overlayStyle={{ width: '90%', height: (window.height * 0.50), borderRadius: 20 }} >
             <Text style={[styles.textPrimary, { color: '#0D3084', marginTop: 20, marginBottom: 20 }]}>Iniciar Sesión</Text>
 
 
