@@ -1,9 +1,14 @@
+import { DrawerScreenProps } from '@react-navigation/drawer'
 import React, { useContext, useState } from 'react'
 import { KeyboardAvoidingView, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { AppBar } from '../componentes/AppBar'
 import { AuthContext } from '../context/AuthContext'
+
+interface Props extends DrawerScreenProps<any, any> {
+}
+
 
 
 export const Registro = () => {
