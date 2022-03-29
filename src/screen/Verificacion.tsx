@@ -25,7 +25,7 @@ export const Verificacion = ({ navigation, route }: Props) => {
                 <View style={{ marginHorizontal: 30 }}>
                     <Text style={{ fontSize: 25, fontWeight: 'bold', alignSelf: 'center', color: 'black' }} > Verificando usuario
                     </Text>
-                    <Text style={{ fontSize: 16, color: 'black' }} > Nuestro equipo esta validando su informando, pronto lo estará contacto uno de nuestro agentes.</Text>
+                    <Text style={{ fontSize: 16, color: 'black' }} > Nuestro equipo esta validando su información, pronto lo estará contactando uno de nuestro agentes.</Text>
                 </View>
             </View>
 
