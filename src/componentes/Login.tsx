@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 interface Props extends DrawerScreenProps<any, any> {
 }
 
-export const Login = ({navigation} : Props) => {
+export const Login = ({navigation, route} : Props) => {
 
     const { login, removeError, logOut, errorMessage, status, user } = useContext(AuthContext);
 
@@ -17,6 +17,15 @@ export const Login = ({navigation} : Props) => {
         console.log({ user, pass });
         Keyboard.dismiss();
         login({ user: usuario, pass });
+
+        if (route.key.includes('Pedido'))  {
+            if (user?.aprobado == 0) navigation.navigate('Verificacion')
+            else navigation.navigate('Pagar')
+        } 
+
+        if (route.key.includes('Verificando'))  {
+           navigation.navigate('Inicio')
+        } 
 
         setuser('');
         setpass('');

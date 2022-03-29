@@ -30,7 +30,8 @@ const App = ({route} : Props) => {
           <SafeAreaView style={{ flex: 1, backgroundColor: '#0D3084' }}>
             <StatusBar backgroundColor='#0D3084' />
             <Drawer.Navigator initialRouteName='Inicio' screenOptions={{ headerShown: false }} drawerContent={(props) => <DrawerContenido  {...props} />}>
-              <Drawer.Screen name="Inicio" component={Verificacion} />
+              <Drawer.Screen name="Inicio" component={Inicio} />
+              <Drawer.Screen name="Verificacion" component={Verificacion} />
               <Drawer.Screen name="Productos" component={Productos} />
               <Drawer.Screen name="Pedido" component={PedidoScreen} />
               <Drawer.Screen name="Pagar" component={Pagar} />

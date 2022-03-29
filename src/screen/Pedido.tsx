@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBrain, faCoffee, faFingerprint } from '@fortawesome/free-solid-svg-icons'
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { Login } from '../componentes/Login';
+import { AuthContext } from '../context/AuthContext';
 
 
 interface Props extends DrawerScreenProps<any, any> {
@@ -27,6 +28,8 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
 
     const { pedidoState, addPedido } = useContext(ProductoContext);
+
+    const {checkToken, status, user} = useContext(AuthContext)
 
     const [visibleDatos, setVisibleDatos] = useState(false);
     const [visibleBiometrico, setVisibleBiometrico] = useState(false);
@@ -75,7 +78,12 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
             <TouchableOpacity
                 onPress={
                     // () => navigation.navigate('Pagar')
-                    toggleBiometrico
+                     async () => {
+                       await checkToken();
+                        if (status == 'not-Authenticate') toggleBiometrico()
+                        else navigation.navigate('Pagar')
+                         
+                    }
                 } style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
                 <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Pagar</Text>
             </TouchableOpacity>
