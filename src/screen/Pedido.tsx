@@ -68,9 +68,8 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
         <View style={{ flex: 1 }}>
             <ScrollView style={{ backgroundColor: 'white' }}>
                 {pedidoState.pedidos.map((e: Pedido) => (
-                    <>
                         <Producto key={e.id} producto={e} />
-                    </>))}
+                    ))}
             </ScrollView>
         </View>
         <View style={{ backgroundColor: 'white' }}>

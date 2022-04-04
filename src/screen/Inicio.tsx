@@ -37,12 +37,12 @@ export const Inicio = ({ navigation, route }: Props) => {
 
     const [marcasMelcab, setmarcasMelcab] = useState<marcas>()
 
-    // useEffect(() => {
-    //     api.get('/marcas').then(resp => {
-    //         console.log(resp.data)
-    //         setmarcasMelcab(resp.data);
-    //     })
-    // }, [])
+    useEffect(() => {
+        api.get('/marcas').then(resp => {
+            console.log(resp.data)
+            setmarcasMelcab(resp.data);
+        })
+    }, [])
 
     return (
 
@@ -69,17 +69,17 @@ export const Inicio = ({ navigation, route }: Props) => {
 
                         <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
 
-                            {/* {marcasMelcab?.marcas.map((marca) => (
-                            <>
+                            {marcasMelcab?.marcas.map((marca) => (
+                            
                                 <View key={marca.id}>
                                 <TouchableOpacity style={styles.btnCategoria}
                                         onPress={() => navigation.navigate('Productos', { marcaid: marca.id })}>
-                                        <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={{ uri: 'http://192.168.1.224:9000/' + marca.id + 'marcas-planetadulce.png' }} />
+                                        <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={{ uri: 'http://192.168.1.93:5000/' + marca.id + 'marcas-planetadulce.png' }} />
                                     </TouchableOpacity>
                                 <Text style={styles.texto}>{marca.nombre}</Text>
                                 </View>
-                            </>
-                        ))} */}
+                            
+                        ))}
 
 
 

@@ -44,27 +44,30 @@ export const AuthProvider = ({ children }: props) => {
 
     const checkToken = async () => {
 
-        const token = await AsyncStorage.getItem('token');
-        console.log(token)
-        //no hay token
-        if (!token) return dispatch({ type: 'notAuthenticate', payload: 'not-Authenticate' })
-        //si hay token, valindando token
-        //if (condition) {} hacer validacion de token en backend
-        const resp = await api.get('/tokenValidate');
+        try {
+            const token = await AsyncStorage.getItem('token');
+            console.log(token)
+            //no hay token
+            if (!token) return dispatch({ type: 'notAuthenticate', payload: 'not-Authenticate' })
+            //si hay token, valindando token
+            //if (condition) {} hacer validacion de token en backend
+            const resp = await api.get('/tokenValidate');
 
-        console.log(resp);
-        // if (status !== 200) {
-        //     dispatch({ type: 'notAuthenticate', payload: 'not-Authenticate' })
-        // }
+            await AsyncStorage.setItem('token', resp.data.token);
+            
+            dispatch({
+                type: 'loginRegistro',
+                payload: { status: resp.data.usuarios.tipouser === 1 ? 'authenticated-cliente' : 'authenticated-delivery', user: resp.data.usuarios, token: resp.data.token }
+            })
+        } catch (error) {
+            return  dispatch({ type: 'notAuthenticate', payload: 'not-Authenticate' })
+        }
 
-        // await AsyncStorage.setItem('token', data.token);
-        // dispatch({
-        //     type: 'loginRegistro',
-        //     payload: { status: data.usuarios.tipouser === 1 ? 'authenticated-cliente' : 'authenticated-delivery', user: data.usuarios, token: data.token }
-        // })
+
     }
 
     const login = async ({ user, pass }: LoginData) => {
+        
         try {
             const { data } = await api.post<LoginResponse>('/login', { user, pass });
             console.log(data);
@@ -73,7 +76,7 @@ export const AuthProvider = ({ children }: props) => {
                 type: 'loginRegistro',
                 payload: { status: data.usuarios.tipouser === 1 ? 'authenticated-cliente' : 'authenticated-delivery', user: data.usuarios, token: data.token }
             })
-             await AsyncStorage.setItem('token', data.token);
+            await AsyncStorage.setItem('token', data.token);
 
         } catch (error: any) {
 
@@ -91,9 +94,9 @@ export const AuthProvider = ({ children }: props) => {
                 type: 'loginRegistro',
                 payload: { status: 'authenticated-cliente', user: data.usuarios, token: data.token }
             })
-             await AsyncStorage.setItem('token', data.token);
+            await AsyncStorage.setItem('token', data.token);
 
-             return true
+            return true
         } catch (error) {
             dispatch({ type: 'addError', payload: 'El usuario o la clave son incorrectos' })
             return false
