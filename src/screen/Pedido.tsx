@@ -29,7 +29,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
     const { pedidoState, addPedido } = useContext(ProductoContext);
 
-    const {checkToken, status, user} = useContext(AuthContext)
+    const { checkToken, status, user } = useContext(AuthContext)
 
     const [visibleDatos, setVisibleDatos] = useState(false);
     const [visibleBiometrico, setVisibleBiometrico] = useState(false);
@@ -68,8 +68,8 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
         <View style={{ flex: 1 }}>
             <ScrollView style={{ backgroundColor: 'white' }}>
                 {pedidoState.pedidos.map((e: Pedido) => (
-                        <Producto key={e.id} producto={e} />
-                    ))}
+                    <Producto key={e.id} producto={e} />
+                ))}
             </ScrollView>
         </View>
         <View style={{ backgroundColor: 'white' }}>
@@ -77,11 +77,12 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
             <TouchableOpacity
                 onPress={
                     // () => navigation.navigate('Pagar')
-                     async () => {
-                       await checkToken();
+                    async () => {
+                        await checkToken();
                         if (status == 'not-Authenticate') toggleBiometrico()
+                        else if (user?.aprobado == 0) navigation.navigate('Verificacion')
                         else navigation.navigate('Pagar')
-                         
+
                     }
                 } style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
                 <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Pagar</Text>

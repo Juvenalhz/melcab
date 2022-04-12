@@ -13,12 +13,12 @@ interface Props extends DrawerScreenProps<any, any> {
 
 export const Registro = ({ navigation }: Props) => {
 
-    const [name, setname] = useState('juve4');
-    const [pass, setpass] = useState('123456');
-    const [user, setuser] = useState('juve4');
-    const [tlf, settlf] = useState('123456789');
-    const [direccion, setdireccion] = useState('cali');
-    const [email, setemail] = useState('jjhernandez');
+    const [name, setname] = useState('');
+    const [pass, setpass] = useState('');
+    const [user, setuser] = useState('');
+    const [tlf, settlf] = useState('');
+    const [direccion, setdireccion] = useState('');
+    const [email, setemail] = useState('');
     const [loaded, setloaded] = useState(true)
 
     const { registro } = useContext(AuthContext)

@@ -34,11 +34,11 @@ export const DrawerContenido = ({ navigation, route }: Props) => {
 
     if (status.length > 21) {
       return (
-        <AuthTipo tipo={1} />
+        <AuthTipo tipo={1} navigation={navigation} route={route} />
       )
     } else {
       return ( 
-        <AuthTipo tipo={2} />
+        <AuthTipo tipo={2} navigation={navigation} route={route} />
       )
 
     }

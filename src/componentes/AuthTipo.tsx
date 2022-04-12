@@ -1,13 +1,16 @@
+import { DrawerScreenProps } from '@react-navigation/drawer';
 import React, { useContext } from 'react'
 import { Image, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { AuthContext } from '../context/AuthContext';
 
-interface Tipo {
+
+interface Props extends DrawerScreenProps<any, any> {
     tipo: number
 }
 
-export const AuthTipo = ({ tipo }: Tipo) => {
+
+export const AuthTipo = ({ tipo, navigation, route }: Props) => {
     const { login, removeError, logOut, errorMessage, status, user } = useContext(AuthContext);
     return (
         <>
@@ -59,7 +62,7 @@ export const AuthTipo = ({ tipo }: Tipo) => {
                         </View>
                         :
                         <View style={{ width: '90%', marginVertical: 5 }}>
-                            <TouchableOpacity style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={ () => { navigation.navigate('Ordenes') } } >
                                 <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                                     <Icon name='book-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
                                 </View>

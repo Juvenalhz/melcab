@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 interface Props extends DrawerScreenProps<any, any> {
 }
 
-export const Login = ({navigation, route} : Props) => {
+export const Login = ({ navigation, route }: Props) => {
 
     const { login, removeError, logOut, errorMessage, status, user } = useContext(AuthContext);
 
@@ -14,24 +14,27 @@ export const Login = ({navigation, route} : Props) => {
     const [pass, setpass] = useState('');
 
     const onLogin = () => {
-        console.log({ user, pass });
+        console.log({ usuario, pass });
         Keyboard.dismiss();
         login({ user: usuario, pass });
 
-        if (route.key.includes('Pedido'))  {
-            if (user?.aprobado == 0) navigation.navigate('Verificacion')
-            else navigation.navigate('Pagar')
-        } 
+        if (route) {
+            if (route.key.includes('Pedido')) {
+                if (user?.aprobado == 0) navigation.navigate('Verificacion')
+                else navigation.navigate('Pagar')
+            }
 
-        if (route.key.includes('Verificando'))  {
-           navigation.navigate('Inicio')
-        } 
+            if (route.key.includes('Verificando')) {
+                navigation.navigate('Inicio')
+            }
+        }
+
 
         setuser('');
         setpass('');
     }
 
-    
+
     return (
         <>
 
@@ -39,7 +42,7 @@ export const Login = ({navigation, route} : Props) => {
             <View style={{ flex: 1, justifyContent: 'flex-start', marginHorizontal: 10, }}>
                 <TextInput
                     style={{
-                        
+
                         borderColor: '#0D3084',
                         borderWidth: 1.5,
                         borderRadius: 15,
@@ -53,7 +56,7 @@ export const Login = ({navigation, route} : Props) => {
 
                 <TextInput
                     style={{
-                        
+
                         borderColor: '#0D3084',
                         borderWidth: 1.5,
                         borderRadius: 15,
