@@ -14,6 +14,7 @@ import { Registro } from './src/screen/Registro';
 import { AuthProvider } from './src/context/AuthContext';
 import { Verificacion } from './src/screen/Verificacion';
 import { Ordenes } from './src/screen/Ordenes';
+import { Chat } from './src/screen/Chat';
 
 
 
@@ -30,7 +31,7 @@ const App = ({route} : Props) => {
         <NavigationContainer>
           <SafeAreaView style={{ flex: 1, backgroundColor: '#0D3084' }}>
             <StatusBar backgroundColor='#0D3084' />
-            <Drawer.Navigator initialRouteName='Inicio' screenOptions={{ headerShown: false }} drawerContent={(props) => <DrawerContenido  {...props} />}>
+            <Drawer.Navigator initialRouteName='Chat' screenOptions={{ headerShown: false }} drawerContent={(props) => <DrawerContenido  {...props} />}>
               <Drawer.Screen name="Inicio" component={Inicio} />
               <Drawer.Screen name="Verificacion" component={Verificacion} />
               <Drawer.Screen name="Productos" component={Productos} />
@@ -38,6 +39,7 @@ const App = ({route} : Props) => {
               <Drawer.Screen name="Pagar" component={Pagar} />
               <Drawer.Screen name="Registro" component={Registro} />
               <Drawer.Screen name="Ordenes" component={Ordenes} />
+              <Drawer.Screen name="Chat" component={Chat} />
 
             </Drawer.Navigator>
           </SafeAreaView>
