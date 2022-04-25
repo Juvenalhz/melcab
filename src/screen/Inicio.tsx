@@ -56,7 +56,6 @@ export const Inicio = ({ navigation, route }: Props) => {
             <ScrollView style={{ flex: 1 }}>
                 <View style={{ flex: 1, backgroundColor: "#fff" }}>
 
-
                     {/* slider */}
                     <View style={{ height: (window.height * 0.40), backgroundColor: "#BFBFBF" }}>
                         <Image style={{ width: '100%', marginBottom: 15, height: '100%' }} source={require('../../utils/logosbancos/LogoPlaneta_Final.jpg')} />
@@ -74,7 +73,7 @@ export const Inicio = ({ navigation, route }: Props) => {
                                 <View key={marca.id}>
                                 <TouchableOpacity style={styles.btnCategoria}
                                         onPress={() => navigation.navigate('Productos', { marcaid: marca.id })}>
-                                        <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={{ uri: 'http://192.168.1.93:5000/' + marca.id + 'marcas-planetadulce.png' }} />
+                                        <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={{ uri: 'http://tuplanetadulce.com:3000/' + marca.id + 'marcas-planetadulce.png' }} />
                                     </TouchableOpacity>
                                 <Text style={styles.texto}>{marca.nombre}</Text>
                                 </View>
