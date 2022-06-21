@@ -10,5 +10,7 @@ export interface dataProducto {
     descripcion: string;
     img:         string;
     precio:      number;
+    precio2:      number;
+    precio3:      number;
     marca:       number;
 }

@@ -23,10 +23,10 @@ export const DrawerContenido = ({ navigation, route }: Props) => {
       errorMessage, [
       {
         text: 'Ok',
-        onPress: () => { removeError }
+        onPress: () => { removeError() }
       }
     ])
-  }, [errorMessage])
+  }, [errorMessage == 'Usuario / Password no son correctos - correo' || errorMessage == 'Usuario / Password no son correctos - password'])
 
   console.log('status:', status)
 
@@ -52,22 +52,12 @@ export const DrawerContenido = ({ navigation, route }: Props) => {
     <DrawerContentScrollView style={{ flex: 1, backgroundColor: '#f0f8ff' }}>
 
       {/* //////////////////////////////////////////////////// */}
-
-
       {/*  Para usuario logueado */}
-
-
-
       {status.length > 17 ?
-
         AuthScreenDrawer()
-
         :
         <Login navigation={navigation} route={route} />
       }
-
-
-
     </DrawerContentScrollView>
   )
 }

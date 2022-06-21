@@ -1,5 +1,5 @@
 import React, { createContext, useEffect } from 'react';
-import { LoginData, LoginResponse, RegisterData, Usuario } from '../interfaces/interfaces';
+import { LoginData, LoginResponse, RegisterData, Usuario, UbicacionLocal } from '../interfaces/interfaces';
 import { useReducer } from 'react';
 import { authReducer, AuthState } from './authReducer';
 import api from '../api/endpoint/Endpoint';
@@ -17,6 +17,8 @@ type AuthContextProps = {
     logOut: () => void;
     removeError: () => void;
     checkToken: () => void;
+    aggDireccion: (ubicacion: UbicacionLocal, iduser : any) => void;
+    actDatosUser: (user : Usuario) => void
 }
 
 const authInicialState: AuthState = {
@@ -85,20 +87,42 @@ export const AuthProvider = ({ children }: props) => {
         }
 
     };
-    const registro = async ({ user, pass, name, tlf, email, direccion }: RegisterData) => {
+    
+    const registro = async ({ user, pass, name, tlf, email, direccion, latitud, longitud, rif}: RegisterData) => {
+        console.log( user, pass, name, tlf, email, direccion, latitud, longitud)
+        try {
+            const { data } = await api.post<LoginResponse>('/register', { user, pass, name, tlf, email,  direccion, latitud, longitud, rif });
+            console.log( data);
+            if (data.msg) {
+                dispatch({ type: 'addError', payload: data.msg })
+                return false
+            } else {
+                dispatch({
+                    type: 'loginRegistro',
+                    payload: { status: 'authenticated-cliente', user: data.usuarios, token: data.token }
+                })
+                await AsyncStorage.setItem('token', data.token);
+    
+                return true
+            }
+        } catch (error) {
+            console.log(error);
+            dispatch({ type: 'addError', payload: 'Datos invalidos' })
+            return false
+        }
+    };
+
+    const aggDireccion = async ({ direccion, region }: UbicacionLocal, iduser: any) => {
 
         try {
-            const { data } = await api.post<LoginResponse>('/register', { user, pass, name, tlf, email, direccion });
-            console.log(data.usuarios);
+            const { data } = await api.post('/direccionLocal', { direccion, region, iduser });
+            console.log(data);
             dispatch({
                 type: 'loginRegistro',
-                payload: { status: 'authenticated-cliente', user: data.usuarios, token: data.token }
+                payload: { status: data.usuarios.tipouser === 1 ? 'authenticated-cliente' : 'authenticated-delivery', user: data.usuarios, token: data.token }
             })
-            await AsyncStorage.setItem('token', data.token);
-
             return true
         } catch (error) {
-            dispatch({ type: 'addError', payload: 'El usuario o la clave son incorrectos' })
             return false
         }
 
@@ -114,6 +138,11 @@ export const AuthProvider = ({ children }: props) => {
         dispatch({ type: 'removeError' })
     };
 
+    const actDatosUser = (user: Usuario) => {
+        //console.log('funcion actDatosUser: ', user)
+        dispatch({ type: 'actDatosUser', payload: {user}  })
+    }
+
     return (
         <AuthContext.Provider value={{
             ...state,
@@ -121,9 +150,12 @@ export const AuthProvider = ({ children }: props) => {
             login,
             logOut,
             removeError,
-            checkToken
+            checkToken,
+            aggDireccion,
+            actDatosUser
         }}>
             {children}
         </AuthContext.Provider>
     )
 }
+ 

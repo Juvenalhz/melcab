@@ -3,6 +3,8 @@ export interface Pedido {
     nombre: string;
     cantidad?: number;
     precio: number;
+    precio2: number;
+    precio3: number;
 }
 
 export interface TotalPedido {
@@ -13,6 +15,7 @@ export interface TotalPedido {
 export interface LoginResponse {
 usuarios: Usuario;
 token: string;
+msg?: string
 }
 export interface Usuario {
     id: number,
@@ -27,7 +30,10 @@ export interface Usuario {
     codigo_aprobacion: string,
     user: string,
     aprobado: number,
-    tipouser: number
+    tipouser: number,
+    longitud: number,
+    latitud: number,
+    rango: number
 }
 
 export interface LoginData {
@@ -42,5 +48,16 @@ export interface RegisterData {
     email: string,
     tlf: string,
     direccion: string,
+    longitud: number,
+    latitud: number,
+    rif: string
 }
+
+export interface UbicacionLocal {
+        direccion: string,
+        region: any,
+        
+}
+
+
 

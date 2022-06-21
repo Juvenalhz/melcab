@@ -5,12 +5,14 @@ import { AppBar } from '../componentes/AppBar'
 import { ProductoContext } from '../context/ProductoContext'
 import { AuthContext } from '../context/AuthContext';
 import { ListItem, Overlay } from 'react-native-elements'
-import { Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity, Dimensions, Linking } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler'
 import { DataTable } from 'react-native-paper'
-
-
+import { Usuario } from '../interfaces/interfaces';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Snackbar from 'react-native-snackbar';
 interface Props extends DrawerScreenProps<any, any> {
+
 }
 
 interface ordenes {
@@ -22,7 +24,12 @@ interface orden {
     id_user: number,
     monto: number,
     fecha_creacion: string,
-    num_ref: string
+    num_ref: string,
+    banco: string,
+    id_delivery: number | null,
+    esatus: number
+    nombre_estatus: string;
+    id_estatus: number
 
 }
 
@@ -61,66 +68,163 @@ export const Ordenes = ({ navigation, route }: Props) => {
 
     useEffect(() => {
 
-        queryOrdenes(user!.id)
+        if (user) queryOrdenes(user!.id)
 
-    }, [])
+    }, [user])
 
     const queryOrdenes = async (id: number) => {
-        const { data } = await api.post('/Ordenes', { iduser: id });
-        console.log(data.results);
-        setOrdenes(data)
+
+        if (user?.tipouser == 1) {
+            const { data } = await api.post('/Ordenes', { iduser: id });
+            console.log(data.results);
+            setOrdenes(data)
+        } else {
+            const { data } = await api.post('/ordenesDelivery', { iduser: id });
+            console.log(data.results);
+            setOrdenes(data)
+        }
     }
 
     const [visible, setVisible] = useState(false);
+    const [visible2, setVisible2] = useState(false);
+    const [visible3, setVisible3] = useState(false);
+    const [idUser, setidUser] = useState(0);
+    const [datauser, setdatauser]  = useState<Usuario>();
 
     const toggleOverlay = () => {
         setVisible(!visible);
     };
 
-    const detallesOrden = async (id_pedido: number) => {
+    const toggleOverlay2 = () => {
+        setVisible2(!visible2);
+    };
 
+    const toggleOverlay3 = () => {
+        setVisible3(!visible3);
+    };
+
+    const detallesOrden = async (id_pedido: number, idUSer: number) => {
+
+        setidUser(idUSer);
         const { data } = await api.post<Detalle>('/detalleOrden', { id_pedido });
+
         setOrdenDetallado(data);
 
         toggleOverlay()
+
 
     };
 
     const window = Dimensions.get("window");
     return (
         <>
-
-
-            <AppBar titulo={'Mis Ordenes'} navigation={navigation} route={route} />
-
+            {user?.tipouser == 1 ? <AppBar titulo={'Mis Ordenes'} navigation={navigation} route={route} /> : <AppBar titulo={'Por entregar'} navigation={navigation} route={route} />}
 
             {ordenes ?
-                <View style={{ flex: 1 }}>
+                <ScrollView>
                     {
                         ordenes.results.map((i: orden) => (
+
+
                             <TouchableOpacity key={i.id_pedido} onPress={() => {
-                                detallesOrden(i.id_pedido)
+                                detallesOrden(i.id_pedido, i.id_user)
                             }}>
                                 <ListItem bottomDivider hasTVPreferredFocus={undefined} tvParallaxProperties={undefined} style={{ width: '100%' }} >
                                     <ListItem.Content>
-                                        <ListItem.Title>Pedido Numero {i.id_pedido}</ListItem.Title>
-                                        <ListItem.Subtitle>Costo total: {i.monto}</ListItem.Subtitle>
+                                        <View style={{ flexDirection: 'row' }} >
+                                            <ListItem.Title>Pedido Numero {i.id_pedido}</ListItem.Title>
+                                            <Text style={[{ fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
+                                            i.id_estatus == 1 ? { color: 'red' } : i.id_estatus == 2 ? { color: 'orange' } : { color: 'green' }]}>{i.nombre_estatus}</Text>
+                                        </View>
+                                        <ListItem.Subtitle>Costo total: {i.monto.toFixed(2)}</ListItem.Subtitle>
                                         <ListItem.Subtitle>Referencia de pago: {i.num_ref}</ListItem.Subtitle>
                                     </ListItem.Content>
                                 </ListItem>
                             </TouchableOpacity>
+
                         ))
                     }
-                    <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ height: window.width * 0.90 }}>
+
+
+                    <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ height: window.height * 0.40, width: window.width * 0.80, borderRadius: 15, justifyContent: 'center', alignContent: 'center' }}>
+                        <View style={{ justifyContent: 'center', flex: 1 }}>
+
+                            <Text style={{ color: '#000', textAlign: 'center', alignSelf: 'center', top: 5, position: 'absolute' }}>Opciones</Text>
+
+                            {user?.tipouser != 1 ?
+                                <>
+                                    <TouchableOpacity style={{ borderRadius: 100, width: 250, marginBottom: 20, alignSelf: 'center' }} onPress={async () =>  {
+                                        const { data } = await api.post('/datosUser', { iduser: idUser });
+                                        console.log(data.usuarios)
+                                        setdatauser(data.usuarios)
+                                        toggleOverlay3()
+                                    }}>
+                                        <View style={{ backgroundColor: '#0D3084', height: 50, width: 250, borderRadius: 100, justifyContent: 'center' }}>
+                                            <Text style={{ color: '#fff', textAlign: 'center', alignSelf: 'center' }}>Info cliente</Text>
+                                        </View>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity style={{ borderRadius: 100, width: 250, marginBottom: 20, alignSelf: 'center' }} onPress={() => { navigation.navigate('Maps', { idUser, id_pedido: ordenDetallado?.results[0].id_pedido }) }}>
+                                        <View style={{ backgroundColor: '#0D3084', height: 50, borderRadius: 100, width: 250, justifyContent: 'center' }}>
+                                            <Text style={{ color: '#fff', textAlign: 'center', alignSelf: 'center' }}>Direccion de entrega</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{ borderRadius: 100, width: 250, alignSelf: 'center' }} onPress={async () => { 
+                                        const { data } = await api.post('/datosUser', { iduser: idUser });
+                                        console.log(data.usuarios)
+                                        setdatauser(data.usuarios)
+                                        
+                                        Linking.openURL(`https://wa.me/${datauser?.tlf}?text=Buen dia, `) }}>
+                                        <View style={{ backgroundColor: '#0D3084', height: 50, borderRadius: 100, width: 250, justifyContent: 'center' }}>
+                                            <Text style={{ color: '#fff', textAlign: 'center', alignSelf: 'center' }}>Chat</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </>
+                                :
+                                <>
+                                    <TouchableOpacity style={{ borderRadius: 100, width: 250, marginBottom: 20, alignSelf: 'center' }} onPress={() => { toggleOverlay2() }}>
+                                        <View style={{ backgroundColor: '#0D3084', height: 50, borderRadius: 100, width: 250, justifyContent: 'center' }}>
+                                            <Text style={{ color: '#fff', textAlign: 'center', alignSelf: 'center' }}>Ver Pedido</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{ borderRadius: 100, width: 250, alignSelf: 'center' }} onPress={() => { Linking.openURL('https://wa.me/+584241595332?text=Buen dia, quiero conocer el estatus de mi pedido') }}>
+                                        <View style={{ backgroundColor: '#0D3084', height: 50, borderRadius: 100, width: 250, justifyContent: 'center' }}>
+                                            <Text style={{ color: '#fff', textAlign: 'center', alignSelf: 'center' }}>Chat</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </>}
+
+                        </View>
+                    </Overlay>
+
+
+                    <Overlay isVisible={visible2} onBackdropPress={toggleOverlay2} overlayStyle={{ height: window.width * 0.90 }}>
                         <ScrollView style={{ width: window.width * 0.90 }}>
                             <Text style={{ alignSelf: 'center', marginVertical: 10, fontSize: 16 }} >Orden numero 2</Text>
-                            <OrdenDetallada ordenDetallado={ordenDetallado!} navigation={navigation} route={route} />
-                            <Text style={{ alignSelf: 'center', marginVertical: 20, fontSize: 18 }} >Total : $200</Text>
+                            <OrdenDetallada ordenDetallado={ordenDetallado!} />
+                            <Text style={{ alignSelf: 'center', marginVertical: 20, fontSize: 18 }} >Total : ${ordenes.results.find((id_orden) => id_orden.id_pedido == ordenDetallado?.results[0].id_pedido)?.monto.toFixed(2)}</Text>
 
                         </ScrollView>
                     </Overlay>
 
-                </View>
+                    <Overlay isVisible={visible3} onBackdropPress={toggleOverlay3} overlayStyle={{ height: window.width * 0.80 }}>
+                        <ScrollView style={{ width: window.width * 0.90 }}>
+                            <Text style={{ alignSelf: 'center', marginVertical: 30, fontSize: 22 }} >Informacion Cliente</Text>
+
+                            <Text style={{  marginVertical: 10, fontSize: 18, marginLeft: 10}} >Nombre Cliente: </Text>
+                            <Text style={{  fontSize: 15, marginLeft: 10 }} >{datauser?.nombre}</Text>
+                            <Text style={{  marginVertical: 10, fontSize: 18, marginLeft: 10}} >Numero Telefonico: </Text>
+                            <Text onPress={ () => {
+                               Clipboard.setString('hello world');
+                               Snackbar.show({
+                                text: 'Número copiado',
+                                duration: 1000,
+                              });
+                            }}  style={{  fontSize: 15, marginLeft: 10 }} >{datauser?.tlf}</Text>
+
+                        </ScrollView>
+                    </Overlay>
+                </ScrollView>
                 :
                 <Text>Sin informacion</Text>}
 
@@ -138,7 +242,7 @@ export const Ordenes = ({ navigation, route }: Props) => {
     )
 }
 
-interface Props {
+interface Props2 {
     ordenDetallado: Detalle
 }
 
@@ -149,20 +253,19 @@ const array = [
 ]
 
 
-export const OrdenDetallada = ({ ordenDetallado }: Props) => {
+export const OrdenDetallada = ({ ordenDetallado }: Props2) => {
     return (
         <>
             <DataTable>
                 <DataTable.Header>
                     <DataTable.Title >Producto</DataTable.Title>
-                    <DataTable.Title numeric>Cantidad</DataTable.Title>
+                    <DataTable.Title style={{ flex: 3 }} numeric>Cantidad</DataTable.Title>
                     <DataTable.Title numeric>Precio</DataTable.Title>
                 </DataTable.Header>
                 {ordenDetallado?.results.map((productos: Result) => {
                     return (
-
-                        <DataTable.Row >
-                            <DataTable.Cell  textStyle = {{fontSize: 10}}> {productos.producto}</DataTable.Cell>
+                        <DataTable.Row key={productos.id_producto_pedido} >
+                            <DataTable.Cell style={{ flex: 3 }} textStyle={{ fontSize: 10 }}> {productos.producto}</DataTable.Cell>
                             <DataTable.Cell numeric>{productos.cantidad}</DataTable.Cell>
                             <DataTable.Cell numeric>$ {productos.precio}</DataTable.Cell>
                         </DataTable.Row>

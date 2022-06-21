@@ -58,7 +58,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
         if (monto > 50) {
             return 'Ha alcanzado el monto minimo para realizar la compra'
         } else {
-            return `Te faltan ${50 - monto} para que tu pedido sea procesado`
+            return `Te faltan ${(50 - monto).toFixed(2)} para que tu pedido sea procesado`
         }
     }
 

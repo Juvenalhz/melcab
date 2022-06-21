@@ -48,8 +48,12 @@ export const ProductoProvider = ({ children }: props) => {
         } else  return
     }
 
+    const borrarPedido = () => {
+        dispatch({type:'borrarPedido'})
+    }
+
     return (
-    <ProductoContext.Provider value={{pedidoState, addPedido, resPedido}}>
+    <ProductoContext.Provider value={{pedidoState, addPedido, resPedido,borrarPedido }}>
         { children }
     </ProductoContext.Provider>)
 };
