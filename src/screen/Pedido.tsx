@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
 import { ProductoContext } from '../context/ProductoContext';
@@ -31,25 +31,19 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
     const { checkToken, status, user } = useContext(AuthContext)
 
-    const [visibleDatos, setVisibleDatos] = useState(false);
+ 
     const [visibleBiometrico, setVisibleBiometrico] = useState(false);
 
 
     const toggleDatos = () => {
         setVisibleBiometrico(false);
-        setVisibleDatos(!visibleDatos);
+        navigation.openDrawer();
     };
     const toggleBiometrico = () => {
         setVisibleBiometrico(!visibleBiometrico);
     };
 
-    const irapagar = async () => {
-        await setVisibleDatos(!visibleDatos);
-
-        navigation.navigate('Pagar');
-    };
-
-    const montoMinimo = (monto: number) => {0
+    const montoMinimo = (monto: number) => {
         monto = Math.round((monto + Number.EPSILON) * 100) / 100;
         console.log(monto)
         if (monto > 50) {
@@ -75,16 +69,22 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
                 onPress={
                     // () => navigation.navigate('Pagar')
                     async () => {
+                        if (pedidoState.total < 50) {
+                            return Alert.alert(
+                              "Alerta",
+                              "Debe alcanzar el minimo de compra",
+                              [
+                                { text: "OK", onPress: () => 
+                                {
+                                } }
+                              ],
+                            );
+                          }
                         await checkToken();
-                        console.log(status, 'aqui')
-                        
                         if (status == 'not-Authenticate') toggleBiometrico()
                         else if (user?.aprobado == 0) navigation.navigate('Verificacion')
                         else{ 
-                            setVisibleDatos(false);
-                            setVisibleBiometrico(false);
                             navigation.navigate('Pagar')}
-
                     }
                 } style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
                 <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Pagar</Text>
@@ -111,13 +111,6 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
             </View>
         </TouchableOpacity>
 
-        <Overlay isVisible={visibleDatos} onBackdropPress={toggleDatos} overlayStyle={{ width: '90%', height: (window.height * 0.50), borderRadius: 20 }} >
-            <KeyboardAvoidingView style={{ flex: 1 }} behavior="position" keyboardVerticalOffset={32}>
-                <ScrollView>
-                    <Login navigation={navigation} route={route} />
-                </ScrollView>
-            </KeyboardAvoidingView>
-        </Overlay>
 
         <Overlay isVisible={visibleBiometrico} onBackdropPress={toggleBiometrico} overlayStyle={{ width: '90%', height: (window.height * 0.50), borderRadius: 20 }} >
             <Text style={[styles.textPrimary, { color: '#0D3084', marginTop: 20, marginBottom: 20 }]}>Iniciar Sesión</Text>

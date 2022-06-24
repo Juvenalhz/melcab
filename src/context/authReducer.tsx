@@ -5,6 +5,7 @@ export interface AuthState {
     token: string | null;
     errorMessage: string;
     user: Usuario | null;
+    modalLogin: boolean
 }
 
 type AuthAction = 

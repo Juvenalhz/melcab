@@ -19,13 +19,15 @@ type AuthContextProps = {
     checkToken: () => void;
     aggDireccion: (ubicacion: UbicacionLocal, iduser : any) => void;
     actDatosUser: (user : Usuario) => void
+    modalLogin: boolean
 }
 
 const authInicialState: AuthState = {
     status: 'checking',
     token: null,
     user: null,
-    errorMessage: ''
+    errorMessage: '',
+    modalLogin: false
 }
 
 
