@@ -29,7 +29,7 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
                     </View>
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.7, marginVertical: 10 }}>
-                    <View style={{ width: '90%', marginVertical: 5 }}>
+                    {/* <View style={{ width: '90%', marginVertical: 5 }}>
                         <TouchableOpacity style={{ flexDirection: 'row' }}>
                             <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                                 <Icon name='person-sharp' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
@@ -38,9 +38,9 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
                                 Mi Cuenta
                             </Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                     <View style={{ width: '90%', marginVertical: 5 }}>
-                        <TouchableOpacity style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Inicio')}>
                             <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                                 <Icon name='home-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
                             </View>
@@ -51,7 +51,7 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
                     </View>
                     {tipo == 1 ?
                         <View style={{ width: '90%', marginVertical: 5 }}>
-                            <TouchableOpacity style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={ () => { navigation.navigate('Ordenes') } }>
                                 <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                                     <Icon name='book-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
                                 </View>
@@ -72,11 +72,25 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
                             </TouchableOpacity>
                         </View>
                     }
+
+                    {tipo == 1 ?  <View style={{ width: '90%', marginVertical: 5 }}>
+                            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={ () => { navigation.navigate('Inicio', {verProductos: true}) } } >
+                                <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
+                                    <Icon name='cart-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
+                                </View>
+                                <Text style={{ fontSize: 15, marginVertical: 15 }}>
+                                    Productos
+                                </Text>
+                            </TouchableOpacity>
+                        </View>: null}
                     <View style={{ flexDirection: 'row', width: '90%', marginVertical: 5 }}>
                         <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                             <Icon name='log-out-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
                         </View>
-                        <TouchableOpacity onPress={() => { logOut() }} >
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate('Inicio')
+                             logOut() 
+                             }} >
                             <Text style={{ fontSize: 15, marginVertical: 15, textAlign: 'center' }}>
                                 Cerrar Sesion
                             </Text>

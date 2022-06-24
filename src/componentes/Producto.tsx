@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { Divider } from 'react-native-elements';
+import React, { useContext, useState } from 'react';
+import { Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Divider, Overlay } from 'react-native-elements';
 import { ProductoContext } from '../context/ProductoContext';
 import { Pedido } from '../interfaces/interfaces';
 import { dataProducto } from '../interfaces/productosInterfaces';
+import { AuthContext } from '../context/AuthContext';
 
 interface Props {
     restarProducto?: Function
@@ -16,26 +17,48 @@ interface Props {
 export const Producto = ({ datos, producto }: Props) => {
 
     const { pedidoState, addPedido, resPedido } = useContext(ProductoContext);
+    const { user } = useContext(AuthContext);
 
     const { pedidos } = pedidoState
 
-    return <>
-        <View style={{ flexDirection: 'row', height: 115, marginHorizontal: 10, marginVertical: 10 }}>
-            <View style={{ backgroundColor: '#BFBFBF', width: 115, height: 115, borderRadius: 10 }}>
-                <Image style={{ width: 120, height: 120, marginBottom: 15 }}  source={{ uri: 'http://tuplanetadulce.com:3000/' + producto?.id + 'prod-planetadulce.png' }} />
-            </View>
+    const [detalleProducto, setdetalleProducto] = useState({})
 
-            <View style={{  flexDirection: 'column', justifyContent: 'flex-end', flex: 1, marginHorizontal: 20, marginVertical: 15 }}>
+    const [visible, setVisible] = useState(false);
+
+
+
+    const toggleOverlay = () => {
+        setVisible(!visible);
+    };
+
+    const window = Dimensions.get("window");
+
+    return <>
+        <View style={{ flexDirection: 'row', height: 140, marginHorizontal: 10, marginVertical: 10 }} >
+            <TouchableOpacity style={{ backgroundColor: '#BFBFBF', width: 115, height: 150, borderRadius: 10 }} onPress={() => {
+                toggleOverlay()
+            }} >
+                <Image style={{ width: 120, height: 150, marginBottom: 15 }} source={{ uri: 'https://tuplanetadulce.com/' + producto?.id + 'prod-planetadulce.png' }} />
+
+            </TouchableOpacity>
+
+            <View style={{ flexDirection: 'column', justifyContent: 'flex-end', flex: 1, marginHorizontal: 20, marginVertical: 15 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', flex: 1 }}>
                     <View style={{ flexDirection: 'column', flex: 1, justifyContent: 'space-evenly' }}>
                         <Text style={{ fontSize: 14, position: 'absolute', top: 0, right: 30 }}>Disponible</Text>
-                        <Text style={{ fontSize: 14, position: 'absolute', top: 25, right: 55 }}>25</Text>
+                        <Text style={{ fontSize: 14, position: 'absolute', top: 25, right: 55 }}>{producto?.stock}</Text>
                     </View>
                 </View>
                 <Text style={{ fontSize: 18, }}>Costo:</Text>
-                <View style={{ flexDirection: 'row', justifyContent:'space-around'}}>
-                    <Text style={{ fontSize: 18, color: '#0D3084', fontWeight: '700' }}>{producto?.precio}$</Text>
-                    <View style={{ flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <Text style={{ fontSize: 18, color: '#0D3084', fontWeight: '700' }}>{
+                        user ?
+                            user?.rango == 1 ? producto.precio :
+                                user?.rango == 2 ? producto.precio2 :
+                                    producto.precio3 :
+                            producto.precio
+                    } $</Text>
+                    <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity style={{
                             height: 35,
                             width: 35, backgroundColor: '#0D3084',
@@ -57,13 +80,33 @@ export const Producto = ({ datos, producto }: Props) => {
                             justifyContent: 'center'
                         }}
                             // onPress={() => sumarProducto(producto?.producto == null ? datos?.nombre : producto?.producto, datos?.precio)
-                            onPress={() => addPedido(producto)
+                            onPress={() => {
+                                if (producto.stock > (pedidos.find((pedido) => pedido.id == producto.id)?.cantidad ?? 0)) {
+
+                                    addPedido(producto)
+                                }
+                            }
+
                             }><Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}>+</Text></TouchableOpacity>
                     </View>
                 </View>
             </View>
         </View>
-        <Text style={{ fontSize: 18, marginHorizontal: 10, marginVertical:10, borderColor:'rgba(13,48,132,0.5)', borderTopColor:'white', borderWidth:2, borderRadius:8 }}>{datos?.nombre ?? producto?.nombre}</Text>
-        
+        <Text style={{ fontSize: 18, marginHorizontal: 10, marginVertical: 10, borderColor: 'rgba(13,48,132,0.5)', borderTopColor: 'white', borderWidth: 2, borderRadius: 8 }}>{datos?.nombre ?? producto?.nombre}</Text>
+        <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ height: window.width * 1.15, width: window.width * 0.90 }}>
+            <View style={{ margin: 10 }}>
+                <Image style={{ width: 250, height: 330, marginBottom: 15 }} source={{ uri: 'https://tuplanetadulce.com/' + producto?.id + 'prod-planetadulce.png' }} />
+                <View>
+                    <Text style={{ fontSize: 20 }}>{producto.nombre}</Text>
+                    <Text style={{ fontSize: 16 }}>Precio {
+                        user ?
+                            user?.rango == 1 ? producto.precio :
+                                user?.rango == 2 ? producto.precio2 :
+                                    producto.precio3 :
+                            producto.precio
+                    } $</Text>
+                </View>
+            </View>
+        </Overlay>
     </>;
 };

@@ -20,7 +20,7 @@ interface Props extends DrawerScreenProps<any, any> {
 export const Pagar = ({ navigation, route }: Props) => {
 
 
-
+  const [numref, setnumref] = useState('');
   interface Cuenta {
     id: number;
     cuenta: string;
@@ -28,16 +28,29 @@ export const Pagar = ({ navigation, route }: Props) => {
     RIF: string;
   }
 
-  const { pedidoState, addPedido } = useContext(ProductoContext);
+  const { pedidoState, addPedido, borrarPedido } = useContext(ProductoContext);
   const { user } = useContext(AuthContext);
 
   const createTwoButtonAlert = async () => {
 
+    if (!numref) {
+      return Alert.alert(
+        "Error",
+        "Debe ingresar el número de referencia",
+        [
+          { text: "OK", onPress: () => 
+          {
+          } }
+        ],
+      );
+    }
+   
     const data = {
       iduser: user?.id,
       monto: pedidoState.total,
-      numref: "12346",
-      productos: pedidoState.pedidos
+      numref,
+      productos: pedidoState.pedidos, 
+      banco:cuentaSeleccionada.banco
     }
     console.log(data);
     await generarPedido ()
@@ -45,7 +58,10 @@ export const Pagar = ({ navigation, route }: Props) => {
       "Exito",
       "Su pedido esta siendo procesado.",
       [
-        { text: "OK", onPress: () => navigation.navigate('Inicio') }
+        { text: "OK", onPress: () => 
+        {
+        navigation.navigate('Inicio')
+        borrarPedido()} }
       ],
     );
   }
@@ -107,10 +123,13 @@ export const Pagar = ({ navigation, route }: Props) => {
 
       iduser: user?.id,
       monto: pedidoState.total,
-      numref: "12346",
-      productos: pedidoState.pedidos
+      numref,
+      productos: pedidoState.pedidos, 
+      banco:cuentaSeleccionada.banco
+
 
     });
+    setnumref('');
   }
   return (<>
     <AppBar titulo='Proceso de Pago' navigation={navigation} route={route} />
@@ -171,7 +190,10 @@ export const Pagar = ({ navigation, route }: Props) => {
           <Input
             containerStyle={{ width: 300, alignSelf: 'center' }}
             placeholder='Nro de referencia'
-            leftIcon={<FontAwesomeIcon icon={faPaste} size={30} color={'#0D3084'} />} autoCompleteType={undefined} />
+            leftIcon={<FontAwesomeIcon icon={faPaste} size={30} color={'#0D3084'} />} autoCompleteType={undefined} 
+            value={numref}
+            onChangeText={(e) => {setnumref(e)}}
+            />
 
 
         </View>

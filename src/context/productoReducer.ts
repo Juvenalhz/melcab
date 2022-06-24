@@ -1,7 +1,7 @@
 import { TotalPedido, Pedido } from '../interfaces/interfaces';
 
 type PedidoAction = { type: 'addPedido', payload: Pedido } | { type: 'resPedido', payload: Pedido } | { type: 'nuevoPedido', payload: Pedido }
-    | { type: 'resPedido', payload: Pedido } | { type: 'eliminarPedido', payload: Pedido }
+    | { type: 'resPedido', payload: Pedido } | { type: 'eliminarPedido', payload: Pedido } | { type: 'borrarPedido' }
 
 export const productoReducer = (state: TotalPedido, action: PedidoAction) => {
 
@@ -17,7 +17,7 @@ export const productoReducer = (state: TotalPedido, action: PedidoAction) => {
                 ...state, pedidos: state.pedidos.map(({ ...pedido }) => {
                     if (pedido.id === action.payload.id) {
                         pedido.cantidad = (pedido.cantidad ?? 0) + 1;
-                        
+
                     }
                     return pedido
                 }), total: state.total = state.total + action.payload.precio
@@ -29,7 +29,7 @@ export const productoReducer = (state: TotalPedido, action: PedidoAction) => {
                 ...state, pedidos: state.pedidos.map(({ ...pedido }) => {
                     if (pedido.id === action.payload.id) {
                         pedido.cantidad = (pedido.cantidad ?? 0) - 1;
-                       
+
                     }
                     return pedido
                 }), total: state.total = state.total - action.payload.precio
@@ -38,11 +38,19 @@ export const productoReducer = (state: TotalPedido, action: PedidoAction) => {
         case 'eliminarPedido':
 
             return {
-                ...state, pedidos: state.pedidos.filter(({ ...pedido }) => 
+                ...state, pedidos: state.pedidos.filter(({ ...pedido }) =>
                     pedido.id != action.payload.id
-                
+
                 ), total: state.total = state.total - action.payload.precio
             }
+
+        case 'borrarPedido': 
+        return{
+            ...state,
+            pedidos: [], total: 0
+        }
+
+     
 
 
         default:
