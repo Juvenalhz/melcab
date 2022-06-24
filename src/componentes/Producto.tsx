@@ -49,7 +49,7 @@ export const Producto = ({ datos, producto }: Props) => {
                         <Text style={{ fontSize: 14, position: 'absolute', top: 25, right: 55 }}>{producto?.stock}</Text>
                     </View>
                 </View>
-                <Text style={{ fontSize: 18, }}>Costo:</Text>
+                <Text style={[{ fontSize: 18,  }, user?.tipouser==2 ? {textAlign: 'center'} : null] }>Costo:</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                     <Text style={{ fontSize: 18, color: '#0D3084', fontWeight: '700' }}>{
                         user ?
@@ -58,37 +58,40 @@ export const Producto = ({ datos, producto }: Props) => {
                                     producto.precio3 :
                             producto.precio
                     } $</Text>
-                    <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity style={{
-                            height: 35,
-                            width: 35, backgroundColor: '#0D3084',
-                            borderRadius: 100,
-                            marginHorizontal: 10,
-                            justifyContent: 'center'
-                        }}
-                            onPress={() => resPedido(producto)}><Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}
-                            >-</Text></TouchableOpacity>
-                        <Text style={{ fontSize: 16, color: '#0D3084', fontWeight: '700', alignSelf: 'center' }}>
-                            {
-                                pedidos.find((pedido) => pedido.id == producto.id)?.cantidad ?? 0}
-                        </Text>
-                        <TouchableOpacity style={{
-                            height: 35,
-                            width: 35, backgroundColor: '#0D3084',
-                            borderRadius: 100,
-                            marginHorizontal: 10,
-                            justifyContent: 'center'
-                        }}
-                            // onPress={() => sumarProducto(producto?.producto == null ? datos?.nombre : producto?.producto, datos?.precio)
-                            onPress={() => {
-                                if (producto.stock > (pedidos.find((pedido) => pedido.id == producto.id)?.cantidad ?? 0)) {
+                    {user?.tipouser != 2 ?
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity style={{
+                                height: 35,
+                                width: 35, backgroundColor: '#0D3084',
+                                borderRadius: 100,
+                                marginHorizontal: 10,
+                                justifyContent: 'center'
+                            }}
+                                onPress={() => resPedido(producto)}><Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}
+                                >-</Text></TouchableOpacity>
+                            <Text style={{ fontSize: 16, color: '#0D3084', fontWeight: '700', alignSelf: 'center' }}>
+                                {
+                                    pedidos.find((pedido) => pedido.id == producto.id)?.cantidad ?? 0}
+                            </Text>
+                            <TouchableOpacity style={{
+                                height: 35,
+                                width: 35, backgroundColor: '#0D3084',
+                                borderRadius: 100,
+                                marginHorizontal: 10,
+                                justifyContent: 'center'
+                            }}
+                                // onPress={() => sumarProducto(producto?.producto == null ? datos?.nombre : producto?.producto, datos?.precio)
+                                onPress={() => {
+                                    if (producto.stock > (pedidos.find((pedido) => pedido.id == producto.id)?.cantidad ?? 0)) {
 
-                                    addPedido(producto)
+                                        addPedido(producto)
+                                    }
                                 }
-                            }
 
-                            }><Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}>+</Text></TouchableOpacity>
-                    </View>
+                                }><Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}>+</Text></TouchableOpacity>
+                        </View> : null
+                    }
+
                 </View>
             </View>
         </View>

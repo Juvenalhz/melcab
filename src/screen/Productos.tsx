@@ -10,6 +10,7 @@ import { SearchBar } from 'react-native-elements';
 import { JSONProductos, dataProducto } from '../interfaces/productosInterfaces';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import api from '../api/endpoint/Endpoint';
+import { AuthContext } from '../context/AuthContext';
 
 interface Props extends DrawerScreenProps<any, any> {
 }
@@ -18,6 +19,7 @@ export const Productos = ({ navigation, route }: Props) => {
 
 
     const { pedidoState, addPedido } = useContext(ProductoContext);
+    const { user } = useContext(AuthContext)
 
     console.log(pedidoState);
 
@@ -35,7 +37,7 @@ export const Productos = ({ navigation, route }: Props) => {
         })
     }, [route.params?.marcaid])
 
-   
+
 
     const { restarProducto,
         sumarProducto,
@@ -58,7 +60,7 @@ export const Productos = ({ navigation, route }: Props) => {
             });
             setsearch(text);
             setfilterDataProducto(productoBuscado)
-            
+
         } else {
             setfilterDataProducto(datosproducto);
             setsearch(text);
@@ -78,41 +80,45 @@ export const Productos = ({ navigation, route }: Props) => {
                 </View>
 
                 {isLoading ?
-                
-                < View style={{flex:1, justifyContent:'center',alignContent:'center'}}>
-                    <ActivityIndicator color="blue" size={50} />
-                </View>
 
-                :
-                
-                <ScrollView style={{ backgroundColor: 'white' }}>
-                    {filterDataProducto?.map((user) => (
-                        <Producto key={user.id} restarProducto={restarProducto} sumarProducto={sumarProducto} datos={user} producto={user} />
-                    ))}
-                </ScrollView>
-            }
-                
-            </View>
-            <View style={{ flexDirection: 'row', flex: 0.1 }}>
-
-                <TouchableOpacity style={{ flex: 1}} onPress={() => navigation.navigate('Pedido')}>
-                    <View style={{
-                        elevation: 10,
-                        shadowColor: 'black',
-                        flex: 1, backgroundColor: "white", borderTopEndRadius: 10, borderTopStartRadius: 10, justifyContent: 'center', alignItems: 'center'
-
-                    }}>
-                        <View style={{ flexDirection: 'column' }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ color: '#0D3084', fontSize: 18 }}> TOTAL </Text>
-                                <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> - </Text>
-                                <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {Math.round((pedidoState.total + Number.EPSILON) * 100) / 100} </Text>
-                            </View>
-                            <Text style={{ color: '#0D3084', fontSize: 12, alignSelf: 'center' }}> Ver Pedido </Text>
-                        </View>
+                    < View style={{ flex: 1, justifyContent: 'center', alignContent: 'center' }}>
+                        <ActivityIndicator color="blue" size={50} />
                     </View>
-                </TouchableOpacity>
+
+                    :
+
+                    <ScrollView style={{ backgroundColor: 'white' }}>
+                        {filterDataProducto?.map((user) => (
+                            <Producto key={user.id} restarProducto={restarProducto} sumarProducto={sumarProducto} datos={user} producto={user} />
+                        ))}
+                    </ScrollView>
+                }
+
             </View>
+            {user?.tipouser != 2 ?
+                <View style={{ flexDirection: 'row', flex: 0.1 }}>
+
+                    <TouchableOpacity style={{ flex: 1 }} onPress={() => navigation.navigate('Pedido')}>
+                        <View style={{
+                            elevation: 10,
+                            shadowColor: 'black',
+                            flex: 1, backgroundColor: "white", borderTopEndRadius: 10, borderTopStartRadius: 10, justifyContent: 'center', alignItems: 'center'
+
+                        }}>
+                            <View style={{ flexDirection: 'column' }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={{ color: '#0D3084', fontSize: 18 }}> TOTAL </Text>
+                                    <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> - </Text>
+                                    <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {Math.round((pedidoState.total + Number.EPSILON) * 100) / 100} </Text>
+                                </View>
+                                <Text style={{ color: '#0D3084', fontSize: 12, alignSelf: 'center' }}> Ver Pedido </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View> :
+                null
+            }
+
 
 
 

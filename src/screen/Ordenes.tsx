@@ -28,7 +28,7 @@ interface orden {
     banco: string,
     id_delivery: number | null,
     esatus: number
-    nombre_estatus: string;
+    estatus: string;
     id_estatus: number
 
 }
@@ -137,7 +137,7 @@ export const Ordenes = ({ navigation, route }: Props) => {
                                         <View style={{ flexDirection: 'row' }} >
                                             <ListItem.Title>Pedido Numero {i.id_pedido}</ListItem.Title>
                                             <Text style={[{ fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
-                                            i.id_estatus == 1 ? { color: 'red' } : i.id_estatus == 2 ? { color: 'orange' } : { color: 'green' }]}>{i.nombre_estatus}</Text>
+                                            i.id_estatus == 1 ? { color: 'red' } : i.id_estatus == 2 ? { color: 'orange' } : { color: 'green' }]}>{i.estatus}</Text>
                                         </View>
                                         <ListItem.Subtitle>Costo total: {i.monto.toFixed(2)}</ListItem.Subtitle>
                                         <ListItem.Subtitle>Referencia de pago: {i.num_ref}</ListItem.Subtitle>

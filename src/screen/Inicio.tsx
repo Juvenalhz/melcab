@@ -113,6 +113,7 @@ export const Inicio = ({ navigation, route }: Props) => {
 
                     {/* bottom */}
 
+                    {user?.tipouser != 2 ? 
                     <View style={{ flexDirection: 'row', flex: 0.1 }}>
                         <TouchableOpacity style={{ flex: 1 }} onPress={() => navigation.navigate('Pedido')}>
                             <View style={{
@@ -131,7 +132,7 @@ export const Inicio = ({ navigation, route }: Props) => {
                                 </View>
                             </View>
                         </TouchableOpacity>
-                    </View>
+                    </View> : null }
 
                 </>
 
