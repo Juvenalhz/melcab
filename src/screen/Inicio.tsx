@@ -95,13 +95,13 @@ export const Inicio = ({ navigation, route }: Props) => {
                                 <Image style={{ width: '100%', marginBottom: 15, height: '100%' }} source={require('../../utils/logosbancos/LogoPlaneta_Final.jpg')} />
                             </View>
                             {/* Categorias */}
-                            <View style={{ flex: 1, flexDirection: "column" }}>
+                            <View style={{ flex: 1, flexDirection: "column",marginTop:10,marginBottom:"50%" }}>
                                 <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
                                     {marcasMelcab?.marcas.map((marca) => (
                                         <View key={marca.id}>
                                             <TouchableOpacity style={styles.btnCategoria}
                                                 onPress={() => navigation.navigate('Productos', { marcaid: marca.id })}>
-                                                <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={{ uri: 'https://tuplanetadulce.com/' + marca.id + 'marcas-planetadulce.png' }} /> 
+                                                <Image style={{ width: 165, height: 140, alignItems: 'center' }} source={{ uri: 'https://tuplanetadulce.com/' + marca.id + 'marcas-planetadulce.png' }} /> 
                                             </TouchableOpacity>
                                             <Text style={styles.texto}>{marca.nombre}</Text>
                                         </View>
@@ -165,9 +165,10 @@ const styles = StyleSheet.create({
     btnCategoria: {
         alignItems: "center",
         backgroundColor: "#F7F7F7",
-        padding: 15,
+        padding: 0,
         borderRadius: 10,
         justifyContent: 'center',
+        margin:10,
         flex: 0.8
     },
     texto: {
