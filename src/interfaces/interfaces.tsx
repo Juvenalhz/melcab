@@ -5,6 +5,7 @@ export interface Pedido {
     precio: number;
     precio2: number;
     precio3: number;
+    stock: number
 }
 
 export interface TotalPedido {

@@ -13,4 +13,5 @@ export interface dataProducto {
     precio2:      number;
     precio3:      number;
     marca:       number;
+    stock: number;
 }

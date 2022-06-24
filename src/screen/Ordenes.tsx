@@ -1,5 +1,5 @@
 import { DrawerScreenProps } from '@react-navigation/drawer'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import api from '../api/endpoint/Endpoint'
 import { AppBar } from '../componentes/AppBar'
 import { ProductoContext } from '../context/ProductoContext'
@@ -65,12 +65,15 @@ export const Ordenes = ({ navigation, route }: Props) => {
 
 
     const [ordenDetallado, setOrdenDetallado] = useState<Detalle>()
+    const [n, setN] = useState(0);
+
+    const nref = useRef(n)
 
     useEffect(() => {
-
+       
         if (user) queryOrdenes(user!.id)
 
-    }, [user])
+    }, [route.params?.id_pedido, user])
 
     const queryOrdenes = async (id: number) => {
 
@@ -164,7 +167,9 @@ export const Ordenes = ({ navigation, route }: Props) => {
                                         </View>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity style={{ borderRadius: 100, width: 250, marginBottom: 20, alignSelf: 'center' }} onPress={() => { navigation.navigate('Maps', { idUser, id_pedido: ordenDetallado?.results[0].id_pedido }) }}>
+                                    <TouchableOpacity style={{ borderRadius: 100, width: 250, marginBottom: 20, alignSelf: 'center' }} onPress={() => { 
+                                        setN(prev => prev + 1)
+                                        navigation.navigate('Maps', { idUser, id_pedido: ordenDetallado?.results[0].id_pedido }) }}>
                                         <View style={{ backgroundColor: '#0D3084', height: 50, borderRadius: 100, width: 250, justifyContent: 'center' }}>
                                             <Text style={{ color: '#fff', textAlign: 'center', alignSelf: 'center' }}>Direccion de entrega</Text>
                                         </View>

@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect, useContext } from 'react'
-import { Alert, Dimensions, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState, useCallback, useEffect, useContext, useRef } from 'react'
+import { ActivityIndicator, Alert, Dimensions, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 import Geolocation from '@react-native-community/geolocation';
@@ -13,7 +13,9 @@ import api from '../api/endpoint/Endpoint';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { LoginResponse } from '../interfaces/interfaces';
 import Geocoder from 'react-native-geocoding';
-
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs();
 const window = Dimensions.get("window");
 
 const styles = StyleSheet.create({
@@ -40,6 +42,7 @@ interface Props extends DrawerScreenProps<any, any> {
 export function Maps({ idUserOrden, navigation, route }: Props) {
 
 
+
   const [currentPosition, setcurrentPosition] = useState({
     region: {
       latitude: 0,
@@ -61,30 +64,72 @@ export function Maps({ idUserOrden, navigation, route }: Props) {
 
   const { aggDireccion, user } = useContext(AuthContext)
 
+  const [loading, setloading] = useState(true)
+
+  const refWatch = useRef<number>();
+  const moveCamera = useRef(true);
+  const mapViewRef = useRef<MapView>();
 
   useEffect(() => {
 
-    Geolocation.getCurrentPosition((info) => {
-      ({
+    getPosition()
+    // refWatch.current = Geolocation.watchPosition((info) => {
+    //   setcurrentPosition({
+    //     ...currentPosition,
+    //     region: {
+    //       latitude: info?.coords.latitude, longitude: info?.coords.longitude, latitudeDelta: 0.003,
+    //       longitudeDelta: 0.003
+    //     }
+    //   })
+    // }, (err) => console.log(err), { distanceFilter: 10, enableHighAccuracy: true }
+    // )
+
+
+
+    // return () => {
+    //   //TODO : cancelar seguimiento
+    //   if (refWatch.current) {
+    //     Geolocation.clearWatch(refWatch.current)
+    //   }
+    // }
+
+    if (user?.tipouser == 2) {
+      console.log(idUserOrden, 'si')
+      queryDireccionUser()
+    }
+
+
+    setloading(false)
+  }, [route.params?.id_pedido])
+
+
+  // useEffect(() => {
+  //   if (!moveCamera.current) return
+  //   mapViewRef.current?.animateCamera({
+  //     center: {
+  //       latitude: currentPosition.region.latitude,
+  //       longitude: currentPosition.region.longitude
+  //     }
+  //   })
+
+  // }, [currentPosition])
+
+
+  const [mapa, setmapa] = useState(true)
+
+  const getPosition = async () => {
+
+    await Geolocation.getCurrentPosition((info) => {
+      setcurrentPosition({
         ...currentPosition,
         region: {
           latitude: info?.coords.latitude, longitude: info?.coords.longitude, latitudeDelta: 0.003,
           longitudeDelta: 0.003
         }
       })
-    }
+    });
+  }
 
-    );
-
-
-
-    if (user?.tipouser == 2) {
-      console.log(idUserOrden, 'si')
-      queryDireccionUser()
-    }
-  }, [])
-
-  const [mapa, setmapa] = useState(true)
 
   const queryDireccionUser = async () => {
     const { data } = await api.post<LoginResponse>('/direccionCliente', { iduser: route.params!.idUser });
@@ -103,11 +148,18 @@ export function Maps({ idUserOrden, navigation, route }: Props) {
     Alert.alert('Entregada finalizada', 'El pedido se ha entregado con éxito', [
       {
         text: 'Salir',
-        onPress: () => { navigation.navigate('Inicio') }
+        onPress: () => { navigation.navigate('Inicio', { id_pedido: route.params?.id_pedido}) }
       }
     ])
   }
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#fff", justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator />
+      </View>
+    )
+  }
   return (
     <>
 
@@ -145,11 +197,12 @@ export function Maps({ idUserOrden, navigation, route }: Props) {
 
           />}
         {mapa ? <MapView
+          ref={(el) => mapViewRef.current = el!}
           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
           style={styles.map}
           region={currentPosition.region}
           showsUserLocation={true}
-
+          onTouchStart={() => moveCamera.current = false}
         // onRegionChangeComplete={region => {
         //   setcurrentPosition({ ...currentPosition, region });
         // }}
@@ -157,6 +210,7 @@ export function Maps({ idUserOrden, navigation, route }: Props) {
 
           {user?.tipouser == 2 ?
             <MapViewDirections
+
               origin={{
                 latitude: currentPosition.region.latitude,
                 longitude: currentPosition.region.longitude
@@ -179,8 +233,8 @@ export function Maps({ idUserOrden, navigation, route }: Props) {
           <Marker
             // key={index}
             coordinate={{
-              latitude: currentPosition.region.latitude,
-              longitude: currentPosition.region.longitude
+              latitude: distinoPosition.region.latitude,
+              longitude: distinoPosition.region.longitude
             }}
             title={'Local'}
             description={'OFICINA'}
@@ -203,4 +257,6 @@ export function Maps({ idUserOrden, navigation, route }: Props) {
       </View>
     </>
   )
+
 }
+

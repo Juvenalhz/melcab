@@ -39,7 +39,7 @@ export const Inicio = ({ navigation, route }: Props) => {
     const { user, token, actDatosUser } = useContext(AuthContext);
 
       useEffect(() => {
-        const socket = io("http://192.168.1.93:9000");
+        const socket = io("https://tuplanetadulce.com");
 
         if (user) socket.emit('indentificando', `user${user?.id}`)
 
@@ -101,7 +101,7 @@ export const Inicio = ({ navigation, route }: Props) => {
                                         <View key={marca.id}>
                                             <TouchableOpacity style={styles.btnCategoria}
                                                 onPress={() => navigation.navigate('Productos', { marcaid: marca.id })}>
-                                                <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={{ uri: 'http://192.168.1.93:9000/' + marca.id + 'marcas-planetadulce.png' }} />
+                                                <Image style={{ width: 140, height: 140, alignItems: 'center' }} source={{ uri: 'https://tuplanetadulce.com/' + marca.id + 'marcas-planetadulce.png' }} /> 
                                             </TouchableOpacity>
                                             <Text style={styles.texto}>{marca.nombre}</Text>
                                         </View>

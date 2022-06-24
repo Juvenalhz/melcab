@@ -38,7 +38,7 @@ export const Producto = ({ datos, producto }: Props) => {
             <TouchableOpacity style={{ backgroundColor: '#BFBFBF', width: 115, height: 150, borderRadius: 10 }} onPress={() => {
                 toggleOverlay()
             }} >
-                <Image style={{ width: 120, height: 150, marginBottom: 15 }} source={{ uri: 'http://192.168.1.93:9000/' + producto?.id + 'prod-planetadulce.png' }} />
+                <Image style={{ width: 120, height: 150, marginBottom: 15 }} source={{ uri: 'https://tuplanetadulce.com/' + producto?.id + 'prod-planetadulce.png' }} />
 
             </TouchableOpacity>
 
@@ -46,7 +46,7 @@ export const Producto = ({ datos, producto }: Props) => {
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', flex: 1 }}>
                     <View style={{ flexDirection: 'column', flex: 1, justifyContent: 'space-evenly' }}>
                         <Text style={{ fontSize: 14, position: 'absolute', top: 0, right: 30 }}>Disponible</Text>
-                        <Text style={{ fontSize: 14, position: 'absolute', top: 25, right: 55 }}>25</Text>
+                        <Text style={{ fontSize: 14, position: 'absolute', top: 25, right: 55 }}>{producto?.stock}</Text>
                     </View>
                 </View>
                 <Text style={{ fontSize: 18, }}>Costo:</Text>
@@ -80,7 +80,13 @@ export const Producto = ({ datos, producto }: Props) => {
                             justifyContent: 'center'
                         }}
                             // onPress={() => sumarProducto(producto?.producto == null ? datos?.nombre : producto?.producto, datos?.precio)
-                            onPress={() => addPedido(producto)
+                            onPress={() => {
+                                if (producto.stock > (pedidos.find((pedido) => pedido.id == producto.id)?.cantidad ?? 0)) {
+
+                                    addPedido(producto)
+                                }
+                            }
+
                             }><Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}>+</Text></TouchableOpacity>
                     </View>
                 </View>
@@ -89,7 +95,7 @@ export const Producto = ({ datos, producto }: Props) => {
         <Text style={{ fontSize: 18, marginHorizontal: 10, marginVertical: 10, borderColor: 'rgba(13,48,132,0.5)', borderTopColor: 'white', borderWidth: 2, borderRadius: 8 }}>{datos?.nombre ?? producto?.nombre}</Text>
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ height: window.width * 1.15, width: window.width * 0.90 }}>
             <View style={{ margin: 10 }}>
-                <Image style={{ width: 250, height: 330, marginBottom: 15 }} source={{ uri: 'http://192.168.1.93:9000/' + producto?.id + 'prod-planetadulce.png' }} />
+                <Image style={{ width: 250, height: 330, marginBottom: 15 }} source={{ uri: 'https://tuplanetadulce.com/' + producto?.id + 'prod-planetadulce.png' }} />
                 <View>
                     <Text style={{ fontSize: 20 }}>{producto.nombre}</Text>
                     <Text style={{ fontSize: 16 }}>Precio {

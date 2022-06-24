@@ -36,11 +36,8 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
 
     const toggleDatos = () => {
-        setVisibleBiometrico(!visibleBiometrico);
-
+        setVisibleBiometrico(false);
         setVisibleDatos(!visibleDatos);
-
-
     };
     const toggleBiometrico = () => {
         setVisibleBiometrico(!visibleBiometrico);
@@ -52,7 +49,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
         navigation.navigate('Pagar');
     };
 
-    const montoMinimo = (monto: number) => {
+    const montoMinimo = (monto: number) => {0
         monto = Math.round((monto + Number.EPSILON) * 100) / 100;
         console.log(monto)
         if (monto > 50) {
@@ -79,9 +76,14 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
                     // () => navigation.navigate('Pagar')
                     async () => {
                         await checkToken();
+                        console.log(status, 'aqui')
+                        
                         if (status == 'not-Authenticate') toggleBiometrico()
                         else if (user?.aprobado == 0) navigation.navigate('Verificacion')
-                        else navigation.navigate('Pagar')
+                        else{ 
+                            setVisibleDatos(false);
+                            setVisibleBiometrico(false);
+                            navigation.navigate('Pagar')}
 
                     }
                 } style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
@@ -135,7 +137,6 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
                         <Text style={{ fontSize: 16, fontWeight: '500', color: '#0D3084', alignItems: 'center' }}> Registrate aquí</Text>
                     </TouchableOpacity>
                 </View>
-
             </View>
 
 
