@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useContext, useEffect, useState } from 'react'
-import { ActivityIndicator, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert,ActivityIndicator, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { AppBar } from '../componentes/AppBar'
 import { Categorias } from '../componentes/Categorias'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -38,36 +38,50 @@ export const Inicio = ({ navigation, route }: Props) => {
     const { pedidoState, addPedido } = useContext(ProductoContext);
     const { user, token, actDatosUser } = useContext(AuthContext);
 
-      useEffect(() => {
-        const socket = io("https://tuplanetadulce.com");
+    //   useEffect(() => {
+    //     const socket = io("https://tuplanetadulce.com");
 
-        if (user) socket.emit('indentificando', `user${user?.id}`)
+    //     if (user) socket.emit('indentificando', `user${user?.id}`)
 
-        socket.on("mensaje", data => {
-          console.log(data, 'si');
-        });
+    //     socket.on("mensaje", data => {
+    //       console.log(data, 'si');
+    //     });
 
-        socket.on("actualizarUser", data => {
-            actDatosUser(data);
-          });
+    //     socket.on("actualizarUser", data => {
+    //         actDatosUser(data);
+    //       });
 
-          return () => {
-              socket.off()
-          }         
-      }, [user?.id]);
+    //       return () => {
+    //           socket.off()
+    //       }         
+    //   }, [user?.id]);
 
 
 
     const [marcasMelcab, setmarcasMelcab] = useState<marcas>()
 
     useEffect(() => {
-        api.get('/marcas').then(resp => {
-//console.log(resp.data)
-            setmarcasMelcab(resp.data);
-        })
+
+        cargarMarcas()
+
+
     }, [])
 
+    const cargarMarcas = async () => {  
 
+        api.get('/marcas').then(resp => {
+                        setmarcasMelcab(resp.data);
+                    }).catch(err => {    
+                         Alert.alert('ERROR', 'Sin conexión', [
+                        {
+                          text: 'Reintentar',onPress: () =>{
+                            cargarMarcas()
+                          }
+                        }
+                      ])   });
+
+
+     };
 
     if (user && !user.direccion) {
         return (
@@ -166,10 +180,10 @@ const styles = StyleSheet.create({
     btnCategoria: {
         alignItems: "center",
         backgroundColor: "#F7F7F7",
-        padding: 0,
+        padding: 5,
         borderRadius: 10,
         justifyContent: 'center',
-        margin:10,
+        margin:5,
         flex: 0.8
     },
     texto: {

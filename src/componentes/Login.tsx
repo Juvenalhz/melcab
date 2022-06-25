@@ -14,7 +14,7 @@ export const Login = ({ navigation, route }: Props) => {
     const [pass, setpass] = useState('');
 
     const onLogin = () => {
-        console.log({ usuario, pass });
+
         Keyboard.dismiss();
         login({ user: usuario, pass });
 

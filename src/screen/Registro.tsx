@@ -1,7 +1,7 @@
 import Geolocation from '@react-native-community/geolocation'
 import { DrawerScreenProps } from '@react-navigation/drawer'
 import React, { useContext, useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, KeyboardAvoidingView, Text, TouchableOpacity, View } from 'react-native'
+import { PermissionsAndroid,ActivityIndicator, Alert, KeyboardAvoidingView, Text, TouchableOpacity, View } from 'react-native'
 import { Directions, ScrollView, TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { AppBar } from '../componentes/AppBar'
@@ -37,7 +37,8 @@ export const Registro = ({ navigation }: Props) => {
     })
 
     useEffect(() => {
-        location()
+        // location()
+        requestLocationPermission()
     }, [])
 
     useEffect(() => {
@@ -56,6 +57,33 @@ export const Registro = ({ navigation }: Props) => {
     }, [errorMessage != ''])
 
 
+    const requestLocationPermission = async () => {
+        try {
+          const check = await PermissionsAndroid.check( PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+          if (check){
+            location()
+          }else{
+                    const granted = await PermissionsAndroid.requestMultiple([PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION ]
+            
+          );
+          if (granted['android.permission.ACCESS_COARSE_LOCATION'] == 'granted' && granted['android.permission.ACCESS_FINE_LOCATION'] == 'granted') {
+           location()
+          } else {
+            Alert.alert('App sin Permiso ', 'Esta app necesita permiso de ubicación', [
+              {
+                text: 'Reintentar',onPress: () =>{
+                  requestLocationPermission()
+                }
+              }
+            ])
+          }
+          }
+  
+        } catch (err) {
+          console.warn(err);
+        }
+      };
+
     const location = async () => {
         await Geolocation.getCurrentPosition(info => {
 
@@ -66,7 +94,6 @@ export const Registro = ({ navigation }: Props) => {
                 longitude: info?.coords.longitude
             }).then(json => {
                 var addressComponent = json.results;
-                console.log(addressComponent[1].formatted_address);
                 setcurrentPosition({
                     direccion: addressComponent[1].formatted_address,
                     region: {
@@ -76,7 +103,16 @@ export const Registro = ({ navigation }: Props) => {
                 })
             })
                 .catch(error => console.warn(error));
-        })
+        },errorMessage => {
+            console.log(errorMessage)
+            Alert.alert('ERROR', 'No se pudo Obtener la ubicación', [
+              {
+                text: 'Reintentar',onPress: () =>{
+                  location()
+                }
+              }
+            ])
+          })
 
 
     }

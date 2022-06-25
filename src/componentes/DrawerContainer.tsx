@@ -17,7 +17,10 @@ export const DrawerContenido = ({ navigation, route }: Props) => {
   
 
   useEffect(() => {
-    if (errorMessage.length === 0) return;
+    if (errorMessage.length === 0){
+       
+        return
+    }
 
     Alert.alert('Login incorrecto',
       errorMessage, [
@@ -28,6 +31,12 @@ export const DrawerContenido = ({ navigation, route }: Props) => {
     ])
   }, [errorMessage == 'Usuario / Password no son correctos - correo' || errorMessage == 'Usuario / Password no son correctos - password'])
 
+  useEffect(() => {
+    if(status === 'authenticated-cliente'){
+      console.log('asjdojas')
+
+    }
+  })
   console.log('status:', status)
 
   const AuthScreenDrawer = () => {

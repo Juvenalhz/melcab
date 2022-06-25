@@ -5,7 +5,7 @@ import { AppBar } from '../componentes/AppBar'
 import { ProductoContext } from '../context/ProductoContext'
 import { AuthContext } from '../context/AuthContext';
 import { ListItem, Overlay } from 'react-native-elements'
-import { Text, View, TouchableOpacity, Dimensions, Linking } from 'react-native';
+import { Text, View, TouchableOpacity, Dimensions, Linking,SafeAreaView,RefreshControl } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler'
 import { DataTable } from 'react-native-paper'
 import { Usuario } from '../interfaces/interfaces';
@@ -79,15 +79,14 @@ export const Ordenes = ({ navigation, route }: Props) => {
 
         if (user?.tipouser == 1) {
             const { data } = await api.post('/Ordenes', { iduser: id });
-            console.log(data.results);
             setOrdenes(data)
         } else {
             const { data } = await api.post('/ordenesDelivery', { iduser: id });
-            console.log(data.results);
+
             setOrdenes(data)
         }
     }
-
+    const [refreshing, setRefreshing] = React.useState(false);
     const [visible, setVisible] = useState(false);
     const [visible2, setVisible2] = useState(false);
     const [visible3, setVisible3] = useState(false);
@@ -118,13 +117,25 @@ export const Ordenes = ({ navigation, route }: Props) => {
 
     };
 
+    const  onRefresh = React.useCallback( async () => {
+        setRefreshing(true);
+       await queryOrdenes(user!.id).then(() => setRefreshing(false));
+      }, []);
     const window = Dimensions.get("window");
     return (
         <>
             {user?.tipouser == 1 ? <AppBar titulo={'Mis Ordenes'} navigation={navigation} route={route} /> : <AppBar titulo={'Por entregar'} navigation={navigation} route={route} />}
 
             {ordenes ?
-                <ScrollView>
+            <SafeAreaView>
+                <ScrollView
+                        refreshControl={
+                            <RefreshControl
+                              refreshing={refreshing}
+                              onRefresh={onRefresh}
+                            />
+                          }
+                >
                     {
                         ordenes.results.map((i: orden) => (
 
@@ -137,7 +148,7 @@ export const Ordenes = ({ navigation, route }: Props) => {
                                         <View style={{ flexDirection: 'row' }} >
                                             <ListItem.Title>Pedido Numero {i.id_pedido}</ListItem.Title>
                                             <Text style={[{ fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
-                                            i.id_estatus == 1 ? { color: 'red' } : i.id_estatus == 2 ? { color: 'orange' } : { color: 'green' }]}>{i.estatus}</Text>
+                                            i.id_estatus == 3 ? { color: 'green' }: i.id_estatus == 4 ? { color: 'orange' } : i.id_estatus == 2 ? { color: 'orange' } : { color: 'red' } ]}>{i.estatus}</Text>
                                         </View>
                                         <ListItem.Subtitle>Costo total: {i.monto.toFixed(2)}</ListItem.Subtitle>
                                         <ListItem.Subtitle>Referencia de pago: {i.num_ref}</ListItem.Subtitle>
@@ -230,6 +241,7 @@ export const Ordenes = ({ navigation, route }: Props) => {
                         </ScrollView>
                     </Overlay>
                 </ScrollView>
+                </SafeAreaView>
                 :
                 <Text>Sin informacion</Text>}
 
