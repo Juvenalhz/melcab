@@ -106,9 +106,9 @@ export const Ordenes = ({ navigation, route }: Props) => {
     };
 
     const detallesOrden = async (id_pedido: number, idUSer: number) => {
-
+        console.log(id_pedido);
         setidUser(idUSer);
-        const { data } = await api.post<Detalle>('/detalleOrden', { id_pedido });
+        const { data } = await api.post<Detalle>('/detallepedidos/', { id_pedido });
 
         setOrdenDetallado(data);
 
@@ -148,7 +148,7 @@ export const Ordenes = ({ navigation, route }: Props) => {
                                         <View style={{ flexDirection: 'row' }} >
                                             <ListItem.Title>Pedido Numero {i.id_pedido}</ListItem.Title>
                                             <Text style={[{ fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
-                                            i.id_estatus == 3 ? { color: 'green' }: i.id_estatus == 4 ? { color: 'orange' } : i.id_estatus == 2 ? { color: 'orange' } : { color: 'red' } ]}>{i.estatus}</Text>
+                                            i.id_estatus == 3 ? { color: 'green' }: i.id_estatus == 4 ? { color: 'orange' } : i.id_estatus == 2 ? { color: 'yelllow' } : { color: 'red' } ]}>{i.estatus}</Text>
                                         </View>
                                         <ListItem.Subtitle>Costo total: {i.monto.toFixed(2)}</ListItem.Subtitle>
                                         <ListItem.Subtitle>Referencia de pago: {i.num_ref}</ListItem.Subtitle>
@@ -216,7 +216,7 @@ export const Ordenes = ({ navigation, route }: Props) => {
 
                     <Overlay isVisible={visible2} onBackdropPress={toggleOverlay2} overlayStyle={{ height: window.width * 0.90 }}>
                         <ScrollView style={{ width: window.width * 0.90 }}>
-                            <Text style={{ alignSelf: 'center', marginVertical: 10, fontSize: 16 }} >Orden numero 2</Text>
+                            <Text style={{ alignSelf: 'center', marginVertical: 10, fontSize: 16 }} >Orden numero {ordenes.results.find((id_orden) => id_orden.id_pedido == ordenDetallado?.results[0].id_pedido)?.id_pedido}</Text>
                             <OrdenDetallada ordenDetallado={ordenDetallado!} />
                             <Text style={{ alignSelf: 'center', marginVertical: 20, fontSize: 18 }} >Total : ${ordenes.results.find((id_orden) => id_orden.id_pedido == ordenDetallado?.results[0].id_pedido)?.monto.toFixed(2)}</Text>
 
@@ -271,6 +271,7 @@ const array = [
 
 
 export const OrdenDetallada = ({ ordenDetallado }: Props2) => {
+    console.log(ordenDetallado)
     return (
         <>
             <DataTable>

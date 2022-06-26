@@ -112,10 +112,10 @@ export const Inicio = ({ navigation, route }: Props) => {
                             <View style={{ flex: 1, flexDirection: "column",marginTop:10,marginBottom:"50%" }}>
                                 <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
                                     {marcasMelcab?.marcas.map((marca) => (
-                                        <View key={marca.id}>
+                                        <View key={marca.id} >
                                             <TouchableOpacity style={styles.btnCategoria}
                                                 onPress={() => navigation.navigate('Productos', { marcaid: marca.id })}>
-                                                <Image style={{ width: 165, height: 140, alignItems: 'center' }} source={{ uri: 'https://tuplanetadulce.com/' + marca.id + 'marcas-planetadulce.png' }} /> 
+                                                <Image style={{ width: 155, height: 140, alignItems: 'center' }} source={{ uri: 'https://tuplanetadulce.com/' + marca.id + 'marcas-planetadulce.png' }} /> 
                                             </TouchableOpacity>
                                             <Text style={styles.texto}>{marca.nombre}</Text>
                                         </View>
