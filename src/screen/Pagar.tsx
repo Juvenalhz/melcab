@@ -1,5 +1,5 @@
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Image, Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Card, Input } from 'react-native-elements';
 import { AppBar } from '../componentes/AppBar';
@@ -19,7 +19,7 @@ interface Props extends DrawerScreenProps<any, any> {
 
 export const Pagar = ({ navigation, route }: Props) => {
 
-
+  const [numeroPedido, setnumeroPedido] = useState<number>()
   const [numref, setnumref] = useState('');
   interface Cuenta {
     id: number;
@@ -119,18 +119,22 @@ export const Pagar = ({ navigation, route }: Props) => {
   console.log(pedidoState);
 
   const generarPedido = async () => {
-   await api.post('/nuevoPedido', {
-
-      iduser: user?.id,
-      monto: pedidoState.total,
+   await api.post('/actPedido', {
       numref,
-      productos: pedidoState.pedidos, 
       banco:cuentaSeleccionada.banco
-
-
     });
     setnumref('');
   }
+
+
+
+  useEffect(() => {
+    
+  console.log('numero pedido',route.params?.id_pedido)
+    
+  }, [route.params?.id_pedido])
+  
+
   return (<>
     <AppBar titulo='Proceso de Pago' navigation={navigation} route={route} />
     <ScrollView style={{ flex: 1 }}>

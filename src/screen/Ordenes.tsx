@@ -108,7 +108,7 @@ export const Ordenes = ({ navigation, route }: Props) => {
     const detallesOrden = async (id_pedido: number, idUSer: number) => {
         console.log(id_pedido);
         setidUser(idUSer);
-        const { data } = await api.post<Detalle>('/detallepedidos/', { id_pedido });
+        const { data } = await api.post<Detalle>('/detalleOrden', { id_pedido });
 
         setOrdenDetallado(data);
 

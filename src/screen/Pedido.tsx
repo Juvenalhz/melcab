@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Alert, Button, Dimensions, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
@@ -15,6 +15,7 @@ import { faBrain, faCoffee, faFingerprint } from '@fortawesome/free-solid-svg-ic
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { Login } from '../componentes/Login';
 import { AuthContext } from '../context/AuthContext';
+import api from '../api/endpoint/Endpoint';
 
 
 interface Props extends DrawerScreenProps<any, any> {
@@ -31,7 +32,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
     const { checkToken, status, user } = useContext(AuthContext)
 
- 
+
     const [visibleBiometrico, setVisibleBiometrico] = useState(false);
 
 
@@ -54,6 +55,31 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
     }
 
 
+    const numeroPedidos = useRef()
+
+    const generarPedido = async () => {
+
+        
+        const { data } = await api.get(`/queryPedido/${user?.id}`);
+      
+        numeroPedidos.current = data.msg.id_pedido
+        let nuevoPedido;
+        //si no tiene estatus pendiente por pagar (1) genera pedido
+        if (data.msg.estatus != 6) {
+            nuevoPedido = await api.post('/nuevoPedido', {
+                iduser: user?.id,
+                monto: pedidoState.total,
+                productos: pedidoState.pedidos
+            });
+            console.log('datos')
+            console.log('datos', nuevoPedido.data.id_pedido)
+            numeroPedidos.current = nuevoPedido.data.id_pedido
+  
+        }
+        navigation.navigate('Pagar', {id_pedido: numeroPedidos})
+    }
+
+
     return (<>
         <AppBar titulo={'Su Pedido'} navigation={navigation} route={route} />
         <View style={{ flex: 1 }}>
@@ -71,20 +97,23 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
                     async () => {
                         if (pedidoState.total < 50) {
                             return Alert.alert(
-                              "Alerta",
-                              "Debe alcanzar el minimo de compra",
-                              [
-                                { text: "OK", onPress: () => 
-                                {
-                                } }
-                              ],
+                                "Alerta",
+                                "Debe alcanzar el minimo de compra",
+                                [
+                                    {
+                                        text: "OK", onPress: () => {
+                                        }
+                                    }
+                                ],
                             );
-                          }
+                        }
                         await checkToken();
                         if (status == 'not-Authenticate') toggleBiometrico()
                         else if (user?.aprobado == 0) navigation.navigate('Verificacion')
-                        else{ 
-                            navigation.navigate('Pagar')}
+                        else {
+                            await generarPedido()
+                            
+                        }
                     }
                 } style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
                 <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Pagar</Text>

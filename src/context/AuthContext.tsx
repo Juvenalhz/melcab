@@ -1,9 +1,10 @@
-import React, { createContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { LoginData, LoginResponse, RegisterData, Usuario, UbicacionLocal } from '../interfaces/interfaces';
 import { useReducer } from 'react';
 import { authReducer, AuthState } from './authReducer';
 import api from '../api/endpoint/Endpoint';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ProductoContext } from './ProductoContext';
 
 
 
@@ -40,10 +41,11 @@ interface props {
 
 export const AuthProvider = ({ children }: props) => {
     const [state, dispatch] = useReducer(authReducer, authInicialState)
-
+    const { borrarPedido } = useContext(ProductoContext);
 
     useEffect(() => {
         checkToken();
+        borrarPedido
     }, [])
 
     const checkToken = async () => {
