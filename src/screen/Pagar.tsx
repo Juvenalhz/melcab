@@ -119,20 +119,21 @@ export const Pagar = ({ navigation, route }: Props) => {
   console.log(pedidoState);
 
   const generarPedido = async () => {
-   await api.post('/actPedido', {
+   await api.put('/actPedido', {
       numref,
-      banco:cuentaSeleccionada.banco
+      banco:cuentaSeleccionada.banco,
+      id_pedido : route.params?.id_pedido.current
     });
     setnumref('');
   }
 
-
+  console.log('numero pedido',route.params?.id_pedido.current)
 
   useEffect(() => {
     
   console.log('numero pedido',route.params?.id_pedido)
     
-  }, [route.params?.id_pedido])
+  }, [route.params?.id_pedido.current])
   
 
   return (<>
