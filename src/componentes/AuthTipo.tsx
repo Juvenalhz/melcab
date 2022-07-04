@@ -16,15 +16,15 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
         <>
             <View style={{ flex: 1 }} >
                 <View style={{ flex: 0.3, marginVertical: 20, marginHorizontal: 20 }}>
-                    <Image style={{ width: 80, height: 80, borderRadius: 100 }} source={require('../../utils/user.jpg')} />
+                    <Image style={{ width: 80, height: 80, borderRadius: 100 ,alignSelf: 'center'}} source={require('../../utils/user.jpg')} />
 
                     <View style={{ marginVertical: 10 }}>
-                        <Text style={{ fontSize: 20 }}>{user?.nombre}</Text>
-                        <Text style={{ fontSize: 10 }}>{user?.email}</Text>
+                        <Text style={{ fontSize: 20,alignSelf: 'center' }}>{user?.nombre}</Text>
+                        <Text style={{ fontSize: 12 ,alignSelf: 'center' }}>{user?.email}</Text>
                         {tipo == 1 ?
-                            <Text style={{ fontSize: 10 }}>Delivery</Text>
+                            <Text style={{ fontSize: 12,alignSelf: 'center'  }}>Delivery</Text>
                             :
-                            <Text style={{ fontSize: 10 }}>Cliente - {user?.aprobado == 0 ? 'Usuario en verificacion' : 'Usuario verificado'} </Text>
+                            <Text style={{ fontSize: 12,alignSelf: 'center'  }}>Cliente - {user?.aprobado == 0 ? 'Sin verificar' : ' Verificado'} </Text>
                         }
                     </View>
                 </View>
@@ -39,7 +39,7 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
                             </Text>
                         </TouchableOpacity>
                     </View> */}
-                    <View style={{ width: '90%', marginVertical: 5 }}>
+                    <View style={{ width: '90%', marginVertical: 5,borderBottomColor:'#1a46b2',borderBottomWidth: 2,}}>
                         <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('Inicio')}>
                             <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                                 <Icon name='home-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
@@ -50,7 +50,7 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
                         </TouchableOpacity>
                     </View>
                     {tipo == 1 ?
-                        <View style={{ width: '90%', marginVertical: 5 }}>
+                        <View style={{ width: '90%', marginVertical: 5 ,borderBottomColor:'#1a46b2',borderBottomWidth: 2,}}>
                             <TouchableOpacity style={{ flexDirection: 'row' }} onPress={ () => { navigation.navigate('Ordenes') } }>
                                 <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                                     <Icon name='book-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
@@ -61,7 +61,7 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
                             </TouchableOpacity>
                         </View>
                         :
-                        <View style={{ width: '90%', marginVertical: 5 }}>
+                        <View style={{ width: '90%', marginVertical: 5,borderBottomColor:'#1a46b2',borderBottomWidth: 2, }}>
                             <TouchableOpacity style={{ flexDirection: 'row' }} onPress={ () => { navigation.navigate('Ordenes') } } >
                                 <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                                     <Icon name='book-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
@@ -73,7 +73,7 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
                         </View>
                     }
 
-                    {tipo == 1 ?  <View style={{ width: '90%', marginVertical: 5 }}>
+                    {tipo == 1 ?  <View style={{ width: '90%', marginVertical: 5 ,borderBottomColor:'#1a46b2',borderBottomWidth: 2,}}>
                             <TouchableOpacity style={{ flexDirection: 'row' }} onPress={ () => { navigation.navigate('Inicio', {verProductos: true}) } } >
                                 <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                                     <Icon name='cart-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
@@ -83,7 +83,7 @@ export const AuthTipo = ({ tipo, navigation, route }: Props) => {
                                 </Text>
                             </TouchableOpacity>
                         </View>: null}
-                    <View style={{ flexDirection: 'row', width: '90%', marginVertical: 5 }}>
+                    <View style={{ flexDirection: 'row', width: '90%', marginVertical: 5,borderBottomColor:'#1a46b2',borderBottomWidth: 2, }}>
                         <View style={{ width: 35, height: 35, borderRadius: 100, backgroundColor: '#1a46b2', justifyContent: 'center', alignItems: 'flex-start', marginHorizontal: 20 }}>
                             <Icon name='log-out-outline' size={20} color="#EEEEEE" style={{ alignSelf: 'center', justifyContent: 'center' }} />
                         </View>

@@ -15,6 +15,7 @@ import { AuthProvider } from './src/context/AuthContext';
 import { Verificacion } from './src/screen/Verificacion';
 import { Ordenes } from './src/screen/Ordenes';
 import { Maps } from './src/screen/Maps';
+import { Factura } from './src/screen/Factura';
 
 
 
@@ -40,6 +41,7 @@ const App = ({route} : Props) => {
               <Drawer.Screen name="Registro" component={Registro} />
               <Drawer.Screen name="Ordenes" component={Ordenes} />
               <Drawer.Screen name="Maps" component={Maps} />
+              <Drawer.Screen name="Factura" component={Factura} />
 
             </Drawer.Navigator>
           </SafeAreaView>
