@@ -1833,6 +1833,11 @@
   "resolved" "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.4.tgz"
   "version" "15.7.4"
 
+"@types/react-native-background-timer@^2.0.0":
+  "integrity" "sha512-y5VW82dL/ESOLg+5QQHyBdsFVA4ZklENxmOyxv8o06T+3HBG2JOSuz/CIPz1vKdB7dmWDGPZNuPosdtnp+xv2A=="
+  "resolved" "https://registry.npmjs.org/@types/react-native-background-timer/-/react-native-background-timer-2.0.0.tgz"
+  "version" "2.0.0"
+
 "@types/react-native-vector-icons@^6.4.6":
   "integrity" "sha512-z4sexbuZ7nmYsp7Z9YB5fSQoN3KFn6nZA3QsCkQLOYnVmVlxX4U22v/bM9Xx/6dOA1vClxoRZo2CFDX16uryXQ=="
   "resolved" "https://registry.npmjs.org/@types/react-native-vector-icons/-/react-native-vector-icons-6.4.10.tgz"
@@ -6292,6 +6297,11 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   "version" "16.13.1"
 
+"react-native-background-timer@^2.4.1":
+  "integrity" "sha512-TE4Kiy7jUyv+hugxDxitzu38sW1NqjCk4uE5IgU2WevLv7sZacaBc6PZKOShNRPGirLl1NWkaG3LDEkdb9Um5g=="
+  "resolved" "https://registry.npmjs.org/react-native-background-timer/-/react-native-background-timer-2.4.1.tgz"
+  "version" "2.4.1"
+
 "react-native-codegen@^0.0.7":
   "integrity" "sha512-dwNgR8zJ3ALr480QnAmpTiqvFo+rDtq6V5oCggKhYFlRjzOmVSFn3YD41u8ltvKS5G2nQ8gCs2vReFFnRGLYng=="
   "resolved" "https://registry.npmjs.org/react-native-codegen/-/react-native-codegen-0.0.7.tgz"
@@ -6480,7 +6490,7 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.67 || 1000.0.0", "react-native@> 0.57", "react-native@>= 0.51", "react-native@>= 0.59", "react-native@>=0.42.0", "react-native@>=0.50.0", "react-native@>=0.57.0", "react-native@>=0.60", "react-native@0.66.4":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.67 || 1000.0.0", "react-native@> 0.57", "react-native@>= 0.51", "react-native@>= 0.59", "react-native@>=0.42.0", "react-native@>=0.47.0", "react-native@>=0.50.0", "react-native@>=0.57.0", "react-native@>=0.60", "react-native@0.66.4":
   "integrity" "sha512-9vx5dlSfQlKbbDtr8+xMon6qsmSu7jvjdXWZpEKh3XVKpUidbbODv7048gwVKX8YAel1egeR7hN8vzSeI6ssTw=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.66.4.tgz"
   "version" "0.66.4"

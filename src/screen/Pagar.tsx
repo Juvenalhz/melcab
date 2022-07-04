@@ -12,15 +12,19 @@ import { faCopy, faPaste } from '@fortawesome/free-regular-svg-icons';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import api from '../api/endpoint/Endpoint';
 import { AuthContext } from '../context/AuthContext';
+import BackgroundTimer from 'react-native-background-timer';
 
 interface Props extends DrawerScreenProps<any, any> {
 }
 
 
 export const Pagar = ({ navigation, route }: Props) => {
-
+  const [secondsLeft, setSecondsLeft] = useState(30);
+  const [timerOn, setTimerOn] = useState(false);
   const [numeroPedido, setnumeroPedido] = useState<number>()
   const [numref, setnumref] = useState('');
+  const { pedidoState, addPedido, borrarPedido } = useContext(ProductoContext);
+  const { user } = useContext(AuthContext);
   interface Cuenta {
     id: number;
     cuenta: string;
@@ -28,8 +32,70 @@ export const Pagar = ({ navigation, route }: Props) => {
     RIF: string;
   }
 
-  const { pedidoState, addPedido, borrarPedido } = useContext(ProductoContext);
-  const { user } = useContext(AuthContext);
+  const startTimer = () => {
+    BackgroundTimer.runBackgroundTimer(() => {
+      setSecondsLeft(secs => {
+        if (secs > 0) return secs - 1
+        else return 0
+      })
+    }, 1000)
+  }
+
+  const clockify = () => {
+    let hours = Math.floor(secondsLeft / 60 / 60)
+    let mins = Math.floor((secondsLeft / 60) % 60)
+    let seconds = Math.floor(secondsLeft % 60)
+    let displayHours = hours < 10 ? `0${hours}` : hours
+    let displayMins = mins < 10 ? `0${mins}` : mins
+    let displaySecs = seconds < 10 ? `0${seconds}` : seconds
+    return {
+      displayHours,
+      displayMins,
+      displaySecs,
+    }
+  }
+  // Runs when timerOn value changes to start or stop timer
+
+  useEffect(() => {
+    if (timerOn) {
+      startTimer()
+    }
+    else BackgroundTimer.stopBackgroundTimer();
+    return () => {
+      BackgroundTimer.stopBackgroundTimer();
+    };
+  }, [timerOn]);
+
+  useEffect(() => {
+    if (secondsLeft === 0) {
+      timeOutPedido()
+      console.log('devolver stock')
+      
+
+    }
+  }, [secondsLeft])
+
+  const timeOutPedido = async () => {
+    setTimerOn(!timerOn);
+    setSecondsLeft(30)
+    await api.put('/reIngresoProduc', { productos: pedidoState.pedidos, id_pedido: route.params?.id_pedido.current })
+    return Alert.alert(
+      "El tiempo ha finalizado",
+      "El pedido ha sido anulado, puede comunicarse con soporte si tiene alguna duda",
+      [
+        {
+          text: "OK", onPress: () => {
+            navigation.navigate('Inicio')
+            borrarPedido()
+          }
+        }
+      ],
+    );
+    
+  }
+
+
+
 
   const createTwoButtonAlert = async () => {
 
@@ -38,35 +104,38 @@ export const Pagar = ({ navigation, route }: Props) => {
         "Error",
         "Debe ingresar el número de referencia",
         [
-          { text: "OK", onPress: () => 
           {
-          } }
+            text: "OK", onPress: () => {
+            }
+          }
         ],
       );
     }
-   
+
     const data = {
       iduser: user?.id,
       monto: pedidoState.total,
       numref,
-      productos: pedidoState.pedidos, 
-      banco:cuentaSeleccionada.banco
+      productos: pedidoState.pedidos,
+      banco: cuentaSeleccionada.banco
     }
     console.log(data);
-    await generarPedido ()
+    await generarPedido()
     Alert.alert(
       "Exito",
       "Su pedido esta siendo procesado.",
       [
-        { text: "OK", onPress: () => 
         {
-        navigation.navigate('Inicio')
-        borrarPedido()} }
+          text: "OK", onPress: () => {
+            navigation.navigate('Inicio')
+            borrarPedido()
+          }
+        }
       ],
     );
   }
 
-    
+
 
   const [cuentaSeleccionada, setcuentaSeleccionada] = useState({
     id: 1,
@@ -119,22 +188,22 @@ export const Pagar = ({ navigation, route }: Props) => {
   console.log(pedidoState);
 
   const generarPedido = async () => {
-   await api.put('/actPedido', {
+    await api.put('/actPedido', {
       numref,
-      banco:cuentaSeleccionada.banco,
-      id_pedido : route.params?.id_pedido.current
+      banco: cuentaSeleccionada.banco,
+      id_pedido: route.params?.id_pedido.current
     });
     setnumref('');
   }
 
-  console.log('numero pedido',route.params?.id_pedido.current)
+  console.log('numero pedido', route.params?.id_pedido.current)
 
   useEffect(() => {
-    
-  console.log('numero pedido',route.params?.id_pedido)
-    
+    setTimerOn(!timerOn);
+    console.log('numero pedido', route.params?.id_pedido)
+    console.log(pedidoState)
   }, [route.params?.id_pedido.current])
-  
+
 
   return (<>
     <AppBar titulo='Proceso de Pago' navigation={navigation} route={route} />
@@ -195,13 +264,16 @@ export const Pagar = ({ navigation, route }: Props) => {
           <Input
             containerStyle={{ width: 300, alignSelf: 'center' }}
             placeholder='Nro de referencia'
-            leftIcon={<FontAwesomeIcon icon={faPaste} size={30} color={'#0D3084'} />} autoCompleteType={undefined} 
+            leftIcon={<FontAwesomeIcon icon={faPaste} size={30} color={'#0D3084'} />} autoCompleteType={undefined}
             value={numref}
-            onChangeText={(e) => {setnumref(e)}}
-            />
+            onChangeText={(e) => { setnumref(e) }}
+          />
 
 
         </View>
+
+
+
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
           {/* <Text style={{ fontSize: 20 }}>Dispone de </Text> */}
           <View style={{ borderColor: '#696969', borderWidth: 1, padding: 5, borderRadius: 15 }}>
@@ -215,13 +287,17 @@ export const Pagar = ({ navigation, route }: Props) => {
               onEnd={(e) => { }}
               autoStart={true}
             />
+            <Text >
+              {clockify().displayMins} Mins{" "}
+              {clockify().displaySecs} Secs
+            </Text>
           </View>
           {/* <Text style={{ fontSize: 20 }}> minutos</Text> */}
         </View>
 
 
 
-        <TouchableOpacity onPress={() => {createTwoButtonAlert()}} style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
+        <TouchableOpacity onPress={() => { createTwoButtonAlert() }} style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
           <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Enviar</Text>
         </TouchableOpacity>
 
@@ -254,3 +330,4 @@ export const Pagar = ({ navigation, route }: Props) => {
   </>
   );
 };
+
