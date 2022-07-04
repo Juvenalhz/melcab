@@ -19,13 +19,15 @@ interface Props extends DrawerScreenProps<any, any> {
 
 
 export const Pagar = ({ navigation, route }: Props) => {
-  const [secondsLeft, setSecondsLeft] = useState(30);
-  const [timerOn, setTimerOn] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(59);
   const [numeroPedido, setnumeroPedido] = useState<number>()
   const [numref, setnumref] = useState('');
   const { pedidoState, addPedido, borrarPedido } = useContext(ProductoContext);
   const { user } = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({
+    load : false,
+    msg: ''
+  });
   interface Cuenta {
     id: number;
     cuenta: string;
@@ -55,30 +57,26 @@ export const Pagar = ({ navigation, route }: Props) => {
       displaySecs,
     }
   }
-  // Runs when timerOn value changes to start or stop timer
-
   useEffect(() => {
-    if (timerOn) {
-      startTimer()
-    }
-    else BackgroundTimer.stopBackgroundTimer();
+    setSecondsLeft(59);
+    startTimer();
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [timerOn]);
+  }, [route.params?.id_pedido.current])
+
 
   useEffect(() => {
     if (secondsLeft === 0) {
       timeOutPedido()
       console.log('devolver stock')
-
-
     }
   }, [secondsLeft])
 
   const timeOutPedido = async () => {
-    setTimerOn(!timerOn);
-    setSecondsLeft(30)
+
+    BackgroundTimer.stopBackgroundTimer();
+  
     await api.put('/reIngresoProduc', { productos: pedidoState.pedidos, id_pedido: route.params?.id_pedido.current })
     return Alert.alert(
       "El tiempo ha finalizado",
@@ -86,8 +84,14 @@ export const Pagar = ({ navigation, route }: Props) => {
       [
         {
           text: "OK", onPress: () => {
-            navigation.navigate('Inicio')
+
+            setLoading({load: true, msg: 'Pedido Anulado'})
             borrarPedido()
+            setTimeout(() => {
+              setLoading({load: false, msg: ''})
+              navigation.navigate('Inicio')
+            }, 5000)
+            
           }
         }
       ],
@@ -112,15 +116,7 @@ export const Pagar = ({ navigation, route }: Props) => {
         ],
       );
     }
-    setLoading(true)
-    const data = {
-      iduser: user?.id,
-      monto: pedidoState.total,
-      numref,
-      productos: pedidoState.pedidos,
-      banco: cuentaSeleccionada.banco
-    }
-    console.log(data);
+    setLoading({load: true, msg: 'Enviando Pedido'})
     await generarPedido()
     Alert.alert(
       "Exito",
@@ -189,17 +185,16 @@ export const Pagar = ({ navigation, route }: Props) => {
   console.log(pedidoState);
 
   const generarPedido = async () => {
+    BackgroundTimer.stopBackgroundTimer();
     await api.put('/actPedido', {
       numref,
-      productos: pedidoState.pedidos,
+      id_pedido: route.params?.id_pedido.current,
       banco: cuentaSeleccionada.banco
-
-
-    }).finally(() => { setLoading(false) });
+    }).finally(() => { setLoading({load: false, msg: ''})});
 
     setnumref('');
   }
-  if (loading) {
+  if (loading.load) {
     return (
       <>
         <View style={{
@@ -209,7 +204,7 @@ export const Pagar = ({ navigation, route }: Props) => {
           padding: 10
         }}>
           <ActivityIndicator size="large" color="#0D3084" />
-          <Text style={{ fontSize: 16, fontWeight: "bold", alignSelf: "center", color: "black" }}>Enviando Pedido</Text>
+          <Text style={{ fontSize: 16, fontWeight: "bold", alignSelf: "center", color: "black" }}>{loading.msg}</Text>
         </View>
 
       </>
@@ -281,50 +276,22 @@ export const Pagar = ({ navigation, route }: Props) => {
 
 
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-            {/* <Text style={{ fontSize: 20 }}>Dispone de </Text> */}
-            <View style={{ borderColor: '#696969', borderWidth: 1, padding: 5, borderRadius: 15 }}>
-              <Countdown
-                // ref={countdownRef}
-                // style={styles.timer}
-                // textStyle={styles.timerText}
-                initialSeconds={1200}
-                onTimes={e => { }}
-                onPause={e => { }}
-                onEnd={(e) => { }}
-                autoStart={true}
-              />
-            </View>
-
 
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               {/* <Text style={{ fontSize: 20 }}>Dispone de </Text> */}
               <View style={{ borderColor: '#696969', borderWidth: 1, padding: 5, borderRadius: 15 }}>
-                <Countdown
-                  // ref={countdownRef}
-                  // style={styles.timer}
-                  // textStyle={styles.timerText}
-                  initialSeconds={1200}
-                  onTimes={e => { }}
-                  onPause={e => { }}
-                  onEnd={(e) => { }}
-                  autoStart={true}
-                />
                 <Text >
-                  {clockify().displayMins} Mins{" "}
                   {clockify().displaySecs} Secs
                 </Text>
               </View>
 
 
+            </View>
 
               <TouchableOpacity onPress={() => { createTwoButtonAlert() }} style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
                 <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Enviar</Text>
               </TouchableOpacity>
 
-
-
-            </View>
             <TouchableOpacity style={{ borderRadius: 100, bottom: 10, marginHorizontal: 10 }} onPress={() => Linking.openURL('https://wa.me/+584241595332?text=Buen Dia, he tenido problemas con mi pago')}>
               <View style={{ flexDirection: 'row' }}>
                 <Image style={{ width: 40, height: 40, marginBottom: 15, borderRadius: 100, marginHorizontal: 10 }} source={require('../../utils/logosbancos/whatsapp.png')} />
@@ -335,7 +302,7 @@ export const Pagar = ({ navigation, route }: Props) => {
 
               </View>
             </TouchableOpacity>
-          </View>
+          
         </View>
       </ScrollView>
       <View style={{

@@ -71,9 +71,8 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
                 monto: pedidoState.total,
                 productos: pedidoState.pedidos
             });
-            console.log('datos')
-            console.log('datos', nuevoPedido.data.id_pedido)
             numeroPedidos.current = nuevoPedido.data.id_pedido
+            console.log('Pedido creado')
   
         }
         navigation.navigate('Pagar', {id_pedido: numeroPedidos})

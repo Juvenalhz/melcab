@@ -38,7 +38,7 @@ export const Producto = ({ datos, producto }: Props) => {
             <TouchableOpacity style={{ backgroundColor: '#BFBFBF', width: 115, height: 150, borderRadius: 10 }} onPress={() => {
                 toggleOverlay()
             }} >
-                <Image style={{ width: 120, height: 150, marginBottom: 15 }} source={{ uri: 'http://192.168.1.103:9000/' + producto?.id + 'prod-planetadulce.png' }} />
+                <Image style={{ width: 120, height: 150, marginBottom: 15 }} source={{ uri: 'http://192.168.1.93:9000/' + producto?.id + 'prod-planetadulce.png' }} />
 
             </TouchableOpacity>
 
