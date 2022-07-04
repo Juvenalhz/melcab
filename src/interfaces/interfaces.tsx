@@ -60,6 +60,21 @@ export interface UbicacionLocal {
         region: any,
         
 }
-
+export interface Orden {
+    banco: string,
+    cantidad: number,
+    email: string,
+    fecha: string,
+    id_pedido: number,
+    id_producto_pedido: number,
+    monto:number,
+    nombre: string,
+    num_ref: number,
+    producto: string,
+    tlf: string,
+    cantidadT:number,
+    delivery:string,
+    id_producto: number
+}
 
 

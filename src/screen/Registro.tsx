@@ -150,7 +150,22 @@ export const Registro = ({ navigation }: Props) => {
                         <Icon name='person-outline' size={20} color="black" style={{ marginLeft: 10 }} />
                         <TextInput placeholder="Nompre completo" style={{ width: '80%', }} value={name} onChangeText={(e) => { setname(e) }} />
                     </View>
+                    <View style={[{
+                        width: '80%',
 
+                        height: 50,
+                        borderColor: '#0D3084',
+                        borderWidth: 1.5,
+                        borderRadius: 15,
+                        marginBottom: 15,
+                        flexDirection: 'row',
+                        marginHorizontal: 30,
+                        alignItems: 'center'
+                    },
+                    ((!rif && onPress)) ? { borderColor: 'red' } : { borderColor: '#0D3084' },]} >
+                        <Icon name='reader-outline' size={20} color="black" style={{ marginLeft: 10 }} />
+                        <TextInput placeholder="RIF" style={{ width: '80%', }} value={rif} onChangeText={(e) => { setrif(e) }} />
+                    </View>
                     <View style={[{
                         width: '80%',
 
@@ -168,22 +183,7 @@ export const Registro = ({ navigation }: Props) => {
                         <TextInput placeholder="Usuario" style={{ width: '80%', }} value={user} onChangeText={(e) => { setuser(e) }} />
                     </View>
 
-                    <View style={[{
-                        width: '80%',
 
-                        height: 50,
-                        borderColor: '#0D3084',
-                        borderWidth: 1.5,
-                        borderRadius: 15,
-                        marginBottom: 15,
-                        flexDirection: 'row',
-                        marginHorizontal: 30,
-                        alignItems: 'center'
-                    },
-                    ((!rif && onPress)) ? { borderColor: 'red' } : { borderColor: '#0D3084' },]} >
-                        <Icon name='reader-outline' size={20} color="black" style={{ marginLeft: 10 }} />
-                        <TextInput placeholder="RIF" style={{ width: '80%', }} value={rif} onChangeText={(e) => { setrif(e) }} />
-                    </View>
 
                     <View style={[{
                         width: '80%',
