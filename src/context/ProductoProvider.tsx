@@ -6,7 +6,8 @@ import { useReducer } from 'react';
 
 const INITIAL_STATE: TotalPedido = {
     total: 0,
-    pedidos: []
+    pedidos: [],
+    pedidoPendiente: false
 }
 
 interface props {
@@ -52,8 +53,12 @@ export const ProductoProvider = ({ children }: props) => {
         dispatch({type:'borrarPedido'})
     }
 
+    const statusPedidoPendiente = () => {
+        dispatch({type: 'pedidoActivo'})
+    }
+
     return (
-    <ProductoContext.Provider value={{pedidoState, addPedido, resPedido,borrarPedido }}>
+    <ProductoContext.Provider value={{pedidoState, addPedido, resPedido,borrarPedido, statusPedidoPendiente }}>
         { children }
     </ProductoContext.Provider>)
 };

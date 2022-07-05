@@ -11,7 +11,8 @@ export interface Pedido {
 
 export interface TotalPedido {
     total: number,
-    pedidos: Pedido[]
+    pedidos: Pedido[],
+    pedidoPendiente : boolean
 }
 
 export interface LoginResponse {

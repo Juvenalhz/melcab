@@ -28,7 +28,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
     const window = Dimensions.get("window");
 
 
-    const { pedidoState, addPedido } = useContext(ProductoContext);
+    const { pedidoState, addPedido, statusPedidoPendiente } = useContext(ProductoContext);
 
     const { checkToken, status, user } = useContext(AuthContext)
 
@@ -73,6 +73,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
             });
             numeroPedidos.current = nuevoPedido.data.id_pedido
             console.log('Pedido creado')
+            statusPedidoPendiente()
   
         }
         navigation.navigate('Pagar', {id_pedido: numeroPedidos})

@@ -5,6 +5,7 @@ import { ProductoContext } from '../context/ProductoContext';
 import { Pedido } from '../interfaces/interfaces';
 import { dataProducto } from '../interfaces/productosInterfaces';
 import { AuthContext } from '../context/AuthContext';
+import Snackbar from 'react-native-snackbar';
 
 interface Props {
     restarProducto?: Function
@@ -38,7 +39,7 @@ export const Producto = ({ datos, producto }: Props) => {
             <TouchableOpacity style={{ backgroundColor: '#BFBFBF', width: 115, height: 150, borderRadius: 10 }} onPress={() => {
                 toggleOverlay()
             }} >
-                <Image style={{ width: 120, height: 150, marginBottom: 15 }} source={{ uri: 'http://192.168.1.93:9000/' + producto?.id + 'prod-planetadulce.png' }} />
+                <Image style={{ width: 120, height: 150, marginBottom: 15 }} source={{ uri: 'http://192.168.43.227:9000/' + producto?.id + 'prod-planetadulce.png' }} />
 
             </TouchableOpacity>
 
@@ -67,7 +68,15 @@ export const Producto = ({ datos, producto }: Props) => {
                                 marginHorizontal: 10,
                                 justifyContent: 'center'
                             }}
-                                onPress={() => resPedido(producto)}><Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}
+                                onPress={() => {
+                                    if (pedidoState?.pedidoPendiente) {
+                                        Snackbar.show({
+                                            text: 'Tiene un pedido activo, debe completarlo para seleccionar más productos.',
+                                            duration: 5000,
+                                        });
+                                    } else resPedido(producto)
+                                }}>
+                                <Text style={{ color: 'white', alignSelf: 'center', fontSize: 20 }}
                                 >-</Text></TouchableOpacity>
                             <Text style={{ fontSize: 16, color: '#0D3084', fontWeight: '700', alignSelf: 'center' }}>
                                 {
@@ -82,9 +91,17 @@ export const Producto = ({ datos, producto }: Props) => {
                             }}
                                 // onPress={() => sumarProducto(producto?.producto == null ? datos?.nombre : producto?.producto, datos?.precio)
                                 onPress={() => {
-                                    if (producto.stock > (pedidos.find((pedido) => pedido.id == producto.id)?.cantidad ?? 0)) {
 
-                                        addPedido(producto)
+                                    if (pedidoState?.pedidoPendiente) {
+                                        Snackbar.show({
+                                            text: 'Tiene un pedido activo, debe completarlo para seleccionar más productos.',
+                                            duration: 5000,
+                                        });
+                                    } else {
+                                        if (producto.stock > (pedidos.find((pedido) => pedido.id == producto.id)?.cantidad ?? 0)) {
+
+                                            addPedido(producto)
+                                        }
                                     }
                                 }
 
@@ -104,17 +121,17 @@ export const Producto = ({ datos, producto }: Props) => {
                 <View>
                     <Text style={{ fontSize: 20, paddingTop: 5, paddingBottom: 5, fontWeight: 'bold' }}>{producto.nombre}</Text>
                     <Text style={{ fontSize: 16, paddingTop: 5, paddingBottom: 5 }}> {producto.descripcion}</Text>
-                        <Text style={{ fontSize: 16, paddingTop: 5, paddingBottom: 5, textAlign: 'center' }}>Precio:</Text>
-                        <Text style={{
-                            textAlign: 'center', fontSize: 18, fontWeight: 'bold',
-                            backgroundColor: 'rgb(10,84,154)', color: 'white', marginTop: 10, marginLeft: '25%', marginRight: '25%'
-                        }}>{
-                                user ?
-                                    user?.rango == 1 ? producto.precio :
-                                        user?.rango == 2 ? producto.precio2 :
-                                            producto.precio3 :
-                                    producto.precio
-                            } $</Text>
+                    <Text style={{ fontSize: 16, paddingTop: 5, paddingBottom: 5, textAlign: 'center' }}>Precio:</Text>
+                    <Text style={{
+                        textAlign: 'center', fontSize: 18, fontWeight: 'bold',
+                        backgroundColor: 'rgb(10,84,154)', color: 'white', marginTop: 10, marginLeft: '25%', marginRight: '25%'
+                    }}>{
+                            user ?
+                                user?.rango == 1 ? producto.precio :
+                                    user?.rango == 2 ? producto.precio2 :
+                                        producto.precio3 :
+                                producto.precio
+                        } $</Text>
                 </View>
             </View>
         </Overlay>

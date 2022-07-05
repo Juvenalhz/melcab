@@ -2,6 +2,7 @@ import { TotalPedido, Pedido } from '../interfaces/interfaces';
 
 type PedidoAction = { type: 'addPedido', payload: Pedido } | { type: 'resPedido', payload: Pedido } | { type: 'nuevoPedido', payload: Pedido }
     | { type: 'resPedido', payload: Pedido } | { type: 'eliminarPedido', payload: Pedido } | { type: 'borrarPedido' }
+    | { type: 'pedidoActivo' }
 
 export const productoReducer = (state: TotalPedido, action: PedidoAction) => {
 
@@ -48,6 +49,11 @@ export const productoReducer = (state: TotalPedido, action: PedidoAction) => {
         return{
             ...state,
             pedidos: [], total: 0
+        }
+        case 'pedidoActivo': 
+        return{
+            ...state,
+            pedidoPendiente: !state.pedidoPendiente
         }
 
      

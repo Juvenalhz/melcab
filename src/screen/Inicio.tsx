@@ -115,7 +115,7 @@ export const Inicio = ({ navigation, route }: Props) => {
                                         <View key={marca.id} >
                                             <TouchableOpacity style={styles.btnCategoria}
                                                 onPress={() => navigation.navigate('Productos', { marcaid: marca.id })}>
-                                                <Image style={{ width: 155, height: 140, alignItems: 'center' }} source={{ uri: 'http://192.168.1.93:9000/' + marca.id + 'marcas-planetadulce.png' }} /> 
+                                                <Image style={{ width: 155, height: 140, alignItems: 'center' }} source={{ uri: 'http://192.168.43.227:9000/' + marca.id + 'marcas-planetadulce.png' }} /> 
                                             </TouchableOpacity>
                                             <Text style={styles.texto}>{marca.nombre}</Text>
                                         </View>

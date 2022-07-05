@@ -22,7 +22,7 @@ export const Pagar = ({ navigation, route }: Props) => {
   const [secondsLeft, setSecondsLeft] = useState(59);
   const [numeroPedido, setnumeroPedido] = useState<number>()
   const [numref, setnumref] = useState('');
-  const { pedidoState, addPedido, borrarPedido } = useContext(ProductoContext);
+  const { pedidoState, addPedido, borrarPedido, statusPedidoPendiente } = useContext(ProductoContext);
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState({
     load : false,
@@ -87,6 +87,7 @@ export const Pagar = ({ navigation, route }: Props) => {
 
             setLoading({load: true, msg: 'Pedido Anulado'})
             borrarPedido()
+            statusPedidoPendiente()
             setTimeout(() => {
               setLoading({load: false, msg: ''})
               navigation.navigate('Inicio')
@@ -118,6 +119,7 @@ export const Pagar = ({ navigation, route }: Props) => {
     }
     setLoading({load: true, msg: 'Enviando Pedido'})
     await generarPedido()
+    statusPedidoPendiente()
     Alert.alert(
       "Exito",
       "Su pedido esta siendo procesado.",
@@ -280,8 +282,9 @@ export const Pagar = ({ navigation, route }: Props) => {
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               {/* <Text style={{ fontSize: 20 }}>Dispone de </Text> */}
               <View style={{ borderColor: '#696969', borderWidth: 1, padding: 5, borderRadius: 15 }}>
-                <Text >
-                  {clockify().displaySecs} Secs
+                <Text style={{ fontSize: 25, color: '#000', fontWeight:'600'}}>
+                  {clockify().displayMins}:
+                  {clockify().displaySecs} 
                 </Text>
               </View>
 
@@ -292,7 +295,7 @@ export const Pagar = ({ navigation, route }: Props) => {
                 <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Enviar</Text>
               </TouchableOpacity>
 
-            <TouchableOpacity style={{ borderRadius: 100, bottom: 10, marginHorizontal: 10 }} onPress={() => Linking.openURL('https://wa.me/+584241595332?text=Buen Dia, he tenido problemas con mi pago')}>
+            <TouchableOpacity style={{ borderRadius: 100, bottom: 10, marginHorizontal: 10, marginTop: 20 }} onPress={() => Linking.openURL('https://wa.me/+584241595332?text=Buen Dia, he tenido problemas con mi pago')}>
               <View style={{ flexDirection: 'row' }}>
                 <Image style={{ width: 40, height: 40, marginBottom: 15, borderRadius: 100, marginHorizontal: 10 }} source={require('../../utils/logosbancos/whatsapp.png')} />
                 <View style={{ flexDirection: 'column' }}>
