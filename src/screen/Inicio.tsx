@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
-import React, { useContext, useEffect, useState } from 'react'
-import { Alert,ActivityIndicator, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { Alert, ActivityIndicator, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { AppBar } from '../componentes/AppBar'
 import { Categorias } from '../componentes/Categorias'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -14,6 +14,12 @@ import { AuthContext } from '../context/AuthContext';
 import { Maps } from './Maps';
 import { io } from 'socket.io-client';
 import { Ordenes } from './Ordenes';
+import { LogBox } from 'react-native';
+import { error } from 'react-native-gifted-chat/lib/utils';
+import { TotalPedido, Pedido } from '../interfaces/interfaces';
+import Snackbar from 'react-native-snackbar';
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs();
 
 
 
@@ -31,11 +37,37 @@ interface marca {
     img?: [] | null
 }
 
+export interface PedidoPendiente {
+    msg: Msg;
+}
+
+export interface Msg {
+    banco: string;
+    estatus: number;
+    fecha_creacion: string;
+    id_delivery: number;
+    id_pedido: number;
+    id_user: number;
+    monto: number;
+    num_ref: string;
+}
+
+export interface ProductosPendientePedido {
+    cantidad: number;
+    descripcion: string;
+    id: number;
+    nombre: string;
+    precio: number;
+    precio2: number;
+    precio3: number;
+    stock: number;
+}
+
 export const Inicio = ({ navigation, route }: Props) => {
 
     const window = Dimensions.get("window");
- 
-    const { pedidoState, addPedido } = useContext(ProductoContext);
+
+    const { pedidoState, addPedido, recuperandoPedido, borrarPedido, statusPedidoPendiente } = useContext(ProductoContext);
     const { user, token, actDatosUser } = useContext(AuthContext);
 
     //   useEffect(() => {
@@ -63,25 +95,91 @@ export const Inicio = ({ navigation, route }: Props) => {
     useEffect(() => {
 
         cargarMarcas()
-
-
     }, [])
 
-    const cargarMarcas = async () => {  
+    useEffect(() => {
+        if (user) {
+            queryPedido()
+        }
+    }, [user?.id])
+
+    const pedidos = useRef<Msg>()
+    const productosPendiente = useRef<Pedido[]>()
+
+    const anularPedido = async () => {
+        await api.put('/reIngresoProduc', {
+            productos: productosPendiente.current!,
+            id_pedido: pedidos.current?.id_pedido
+        }).then(() => {
+            borrarPedido();
+            Snackbar.show({
+                text: 'Pedido anulado.',
+                duration: 5000,
+            });
+        }
+        );
+    }
+
+    const queryPedido = async () => {
+        await api.get(`/queryPedido/${user?.id}`).then(async (pedido) => {
+            pedidos.current = pedido.data.msg
+            console.log(pedido.data)
+            await api.get(`/productoPedidoPendiente/${pedido.data.msg?.id_pedido}`).then((productos) => {
+                console.log(productos.data)
+                productosPendiente.current = productos.data.msg;
+            })
+        })
+
+        if (pedidos.current?.estatus == 1) {
+
+            const fechaPedido = new Date(pedidos.current?.fecha_creacion);
+            const fechaAhora = new Date();
+            const tiempoTranscurrido = (((fechaAhora.getTime() - fechaPedido.getTime()) / 1000) / 60)
+            recuperandoPedido({ pedidos: productosPendiente.current!, total: pedidos.current!.monto })
+            if (tiempoTranscurrido > 17) {
+               anularPedido();
+            }
+            else {
+                return Alert.alert(
+                    "Alerta Pedido Pendiente",
+                    "Usted posee un pedido pendiente con tiempo disponible, ¿desea continuarlo?",
+                    [
+                        {
+                            text: "Anular pedido", onPress: async () => {
+                                anularPedido();
+                            }
+                        },
+                        {
+                            text: "Ir a pedido", onPress: () => {
+                              statusPedidoPendiente()
+                                navigation.navigate('Pagar', { id_pedido: pedidos.current?.id_pedido, tiempoRestante: tiempoTranscurrido })
+                            }
+                        }
+                    ],
+                );
+            }
+        }
+
+    }
+
+
+
+    const cargarMarcas = async () => {
 
         api.get('/marcas').then(resp => {
-                        setmarcasMelcab(resp.data);
-                    }).catch(err => {    
-                         Alert.alert('ERROR', 'Sin conexión', [
-                        {
-                          text: 'Reintentar',onPress: () =>{
-                            cargarMarcas()
-                          }
-                        }
-                      ])   });
+            setmarcasMelcab(resp.data);
+        }).catch(err => {
+            Alert.alert('ERROR', 'Sin conexión', [
+                {
+                    text: 'Reintentar', onPress: () => {
+                        cargarMarcas()
+                    }
+                }
+            ])
+        });
 
 
-     };
+    };
 
     if (user && !user.direccion) {
         return (
@@ -109,13 +207,13 @@ export const Inicio = ({ navigation, route }: Props) => {
                                 <Image style={{ width: '100%', marginBottom: 15, height: '100%' }} source={require('../../utils/logosbancos/LogoPlaneta_Final.jpg')} />
                             </View>
                             {/* Categorias */}
-                            <View style={{ flex: 1, flexDirection: "column",marginTop:10,marginBottom:"50%" }}>
+                            <View style={{ flex: 1, flexDirection: "column", marginTop: 10, marginBottom: "50%" }}>
                                 <View style={{ flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-evenly" }}>
                                     {marcasMelcab?.marcas.map((marca) => (
                                         <View key={marca.id} >
                                             <TouchableOpacity style={styles.btnCategoria}
                                                 onPress={() => navigation.navigate('Productos', { marcaid: marca.id })}>
-                                                <Image style={{ width: 155, height: 140, alignItems: 'center' }} source={{ uri: 'http://192.168.43.227:9000/' + marca.id + 'marcas-planetadulce.png' }} /> 
+                                                <Image style={{ width: 155, height: 140, alignItems: 'center' }} source={{ uri: 'http://192.168.43.227:9000/' + marca.id + 'marcas-planetadulce.png' }} />
                                             </TouchableOpacity>
                                             <Text style={styles.texto}>{marca.nombre}</Text>
                                         </View>
@@ -127,40 +225,40 @@ export const Inicio = ({ navigation, route }: Props) => {
 
                     {/* bottom */}
 
-                    {user?.tipouser != 2 ? 
-                    <View style={{ flexDirection: 'row', flex: 0.1 }}>
-                        <TouchableOpacity style={{ flex: 1 }} onPress={() => navigation.navigate('Pedido')}>
-                            <View style={{
-                                elevation: 10,
-                                shadowColor: 'black',
-                                flex: 1, borderTopEndRadius: 10, backgroundColor: '#EEEEEE', borderTopStartRadius: 10, justifyContent: 'center', alignItems: 'center'
+                    {user?.tipouser != 2 ?
+                        <View style={{ flexDirection: 'row', flex: 0.1 }}>
+                            <TouchableOpacity style={{ flex: 1 }} onPress={() => navigation.navigate('Pedido')}>
+                                <View style={{
+                                    elevation: 10,
+                                    shadowColor: 'black',
+                                    flex: 1, borderTopEndRadius: 10, backgroundColor: '#EEEEEE', borderTopStartRadius: 10, justifyContent: 'center', alignItems: 'center'
 
-                            }}>
-                                <View style={{ flexDirection: 'column' }}>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Text style={{ color: '#0D3084', fontSize: 18 }}> TOTAL </Text>
-                                        <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> - </Text>
-                                        <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {Math.round((pedidoState.total + Number.EPSILON) * 100) / 100} </Text>
+                                }}>
+                                    <View style={{ flexDirection: 'column' }}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Text style={{ color: '#0D3084', fontSize: 18 }}> TOTAL </Text>
+                                            <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> - </Text>
+                                            <Text style={{ color: '#0D3084', fontWeight: '500', fontSize: 18 }}> $ {Math.round((pedidoState.total + Number.EPSILON) * 100) / 100} </Text>
+                                        </View>
+                                        <Text style={{ color: '#0D3084', fontSize: 12, alignSelf: 'center' }}> Ver Pedido </Text>
                                     </View>
-                                    <Text style={{ color: '#0D3084', fontSize: 12, alignSelf: 'center' }}> Ver Pedido </Text>
                                 </View>
-                            </View>
-                        </TouchableOpacity>
-                    </View> : null }
+                            </TouchableOpacity>
+                        </View> : null}
 
                 </>
 
             );
-        } else 
-        return (
-            <>
-              <Ordenes navigation={navigation} route={route}/>
-            </>
-    
-        );
+        } else
+            return (
+                <>
+                    <Ordenes navigation={navigation} route={route} />
+                </>
+
+            );
 
     }
-    {console.log(user?.direccion)}
+    { console.log(user?.direccion) }
     return (
         <>
             {/* appbar */}
@@ -183,7 +281,7 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 10,
         justifyContent: 'center',
-        margin:5,
+        margin: 5,
         flex: 0.8
     },
     texto: {

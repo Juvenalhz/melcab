@@ -2,7 +2,7 @@ import { TotalPedido, Pedido } from '../interfaces/interfaces';
 
 type PedidoAction = { type: 'addPedido', payload: Pedido } | { type: 'resPedido', payload: Pedido } | { type: 'nuevoPedido', payload: Pedido }
     | { type: 'resPedido', payload: Pedido } | { type: 'eliminarPedido', payload: Pedido } | { type: 'borrarPedido' }
-    | { type: 'pedidoActivo' }
+    | { type: 'pedidoActivo' } | { type: 'recuperandoPedido', payload: TotalPedido }
 
 export const productoReducer = (state: TotalPedido, action: PedidoAction) => {
 
@@ -54,6 +54,13 @@ export const productoReducer = (state: TotalPedido, action: PedidoAction) => {
         return{
             ...state,
             pedidoPendiente: !state.pedidoPendiente
+        }
+
+        case 'recuperandoPedido': 
+        return{
+            ...state,
+            pedidos: action.payload.pedidos,
+            total: action.payload.total
         }
 
      

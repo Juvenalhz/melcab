@@ -19,15 +19,16 @@ interface Props extends DrawerScreenProps<any, any> {
 
 
 export const Pagar = ({ navigation, route }: Props) => {
-  const [secondsLeft, setSecondsLeft] = useState(59);
+  const [secondsLeft, setSecondsLeft] = useState(1200);
   const [numeroPedido, setnumeroPedido] = useState<number>()
   const [numref, setnumref] = useState('');
   const { pedidoState, addPedido, borrarPedido, statusPedidoPendiente } = useContext(ProductoContext);
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState({
-    load : false,
+    load: false,
     msg: ''
   });
+  const [id_pedido, setid_pedido] = useState()
   interface Cuenta {
     id: number;
     cuenta: string;
@@ -58,41 +59,46 @@ export const Pagar = ({ navigation, route }: Props) => {
     }
   }
   useEffect(() => {
-    setSecondsLeft(59);
-    startTimer();
+    if (id_pedido != route.params?.id_pedido) {
+      setid_pedido(route.params?.id_pedido)
+      if (route.params?.tiempoRestante) setSecondsLeft(1200 - (route.params?.tiempoRestante * 60));
+      else setSecondsLeft(1200);
+      startTimer();
+      console.log(route.params?.tiempoRestante)
+    }
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [route.params?.id_pedido.current])
+  }, [id_pedido != route.params?.id_pedido])
 
 
   useEffect(() => {
     if (secondsLeft === 0) {
-      timeOutPedido()
+      timeOutPedido("El tiempo ha finalizado",  "El pedido ha sido anulado, puede comunicarse con soporte si tiene alguna duda", 'Pedido Anulado' )
       console.log('devolver stock')
     }
   }, [secondsLeft])
 
-  const timeOutPedido = async () => {
+  const timeOutPedido = async (titutlo : string, mensaje : string, msgLoading : string) => {
 
     BackgroundTimer.stopBackgroundTimer();
-  
-    await api.put('/reIngresoProduc', { productos: pedidoState.pedidos, id_pedido: route.params?.id_pedido.current })
+
+    await api.put('/reIngresoProduc', { productos: pedidoState.pedidos, id_pedido: route.params?.id_pedido })
     return Alert.alert(
-      "El tiempo ha finalizado",
-      "El pedido ha sido anulado, puede comunicarse con soporte si tiene alguna duda",
+      titutlo,
+      mensaje,
       [
         {
           text: "OK", onPress: () => {
 
-            setLoading({load: true, msg: 'Pedido Anulado'})
+            setLoading({ load: true, msg: msgLoading })
             borrarPedido()
             statusPedidoPendiente()
             setTimeout(() => {
-              setLoading({load: false, msg: ''})
+              setLoading({ load: false, msg: '' })
               navigation.navigate('Inicio')
             }, 5000)
-            
+
           }
         }
       ],
@@ -117,7 +123,7 @@ export const Pagar = ({ navigation, route }: Props) => {
         ],
       );
     }
-    setLoading({load: true, msg: 'Enviando Pedido'})
+    setLoading({ load: true, msg: 'Enviando Pedido' })
     await generarPedido()
     statusPedidoPendiente()
     Alert.alert(
@@ -190,9 +196,9 @@ export const Pagar = ({ navigation, route }: Props) => {
     BackgroundTimer.stopBackgroundTimer();
     await api.put('/actPedido', {
       numref,
-      id_pedido: route.params?.id_pedido.current,
+      id_pedido: route.params?.id_pedido,
       banco: cuentaSeleccionada.banco
-    }).finally(() => { setLoading({load: false, msg: ''})});
+    }).finally(() => { setLoading({ load: false, msg: '' }) });
 
     setnumref('');
   }
@@ -279,33 +285,39 @@ export const Pagar = ({ navigation, route }: Props) => {
 
           </View>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              {/* <Text style={{ fontSize: 20 }}>Dispone de </Text> */}
-              <View style={{ borderColor: '#696969', borderWidth: 1, padding: 5, borderRadius: 15 }}>
-                <Text style={{ fontSize: 25, color: '#000', fontWeight:'600'}}>
-                  {clockify().displayMins}:
-                  {clockify().displaySecs} 
-                </Text>
-              </View>
-
-
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            {/* <Text style={{ fontSize: 20 }}>Dispone de </Text> */}
+            <View style={{ borderColor: '#696969', borderWidth: 1, padding: 5, borderRadius: 15 }}>
+              <Text style={{ fontSize: 25, color: '#000', fontWeight: '600' }}>
+                {clockify().displayMins}:
+                {clockify().displaySecs}
+              </Text>
             </View>
 
-              <TouchableOpacity onPress={() => { createTwoButtonAlert() }} style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
-                <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Enviar</Text>
-              </TouchableOpacity>
 
-            <TouchableOpacity style={{ borderRadius: 100, bottom: 10, marginHorizontal: 10, marginTop: 20 }} onPress={() => Linking.openURL('https://wa.me/+584241595332?text=Buen Dia, he tenido problemas con mi pago')}>
-              <View style={{ flexDirection: 'row' }}>
-                <Image style={{ width: 40, height: 40, marginBottom: 15, borderRadius: 100, marginHorizontal: 10 }} source={require('../../utils/logosbancos/whatsapp.png')} />
-                <View style={{ flexDirection: 'column' }}>
-                  <Text style={{ fontSize: 12 }}> Problema con su pago?</Text>
-                  <Text style={{ fontSize: 14 }}> Contactanos! </Text>
-                </View>
+          </View>
 
+          <TouchableOpacity onPress={() => { createTwoButtonAlert() }} style={{ width: '80%', height: 40, backgroundColor: '#0D3084', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
+            <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Enviar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={{ borderRadius: 100, bottom: 10, marginHorizontal: 10, marginTop: 20 }} onPress={() => Linking.openURL('https://wa.me/+584241595332?text=Buen Dia, he tenido problemas con mi pago')}>
+            <View style={{ flexDirection: 'row' }}>
+              <Image style={{ width: 40, height: 40, marginBottom: 15, borderRadius: 100, marginHorizontal: 10 }} source={require('../../utils/logosbancos/whatsapp.png')} />
+              <View style={{ flexDirection: 'column' }}>
+                <Text style={{ fontSize: 12 }}> Problema con su pago?</Text>
+                <Text style={{ fontSize: 14 }}> Contactanos! </Text>
               </View>
-            </TouchableOpacity>
-          
+
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => { 
+            timeOutPedido("Exitoso", "Su pedido a sido anulado exitosamente", "Pedido anulado") 
+            }} style={{ width: '50%', height: 40, backgroundColor: 'orange', borderRadius: 30, alignSelf: 'center', alignItems: 'center', marginVertical: 15 }}>
+            <Text style={{ fontSize: 20, fontWeight: '300', color: 'white', alignItems: 'center' }}>Anular Pedido</Text>
+          </TouchableOpacity>
+
         </View>
       </ScrollView>
       <View style={{

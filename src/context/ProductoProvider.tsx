@@ -56,9 +56,12 @@ export const ProductoProvider = ({ children }: props) => {
     const statusPedidoPendiente = () => {
         dispatch({type: 'pedidoActivo'})
     }
+    const recuperandoPedido = (data : TotalPedido) => {
+        dispatch({type: 'recuperandoPedido', payload : data})
+    }
 
     return (
-    <ProductoContext.Provider value={{pedidoState, addPedido, resPedido,borrarPedido, statusPedidoPendiente }}>
+    <ProductoContext.Provider value={{pedidoState, addPedido, resPedido,borrarPedido, statusPedidoPendiente, recuperandoPedido }}>
         { children }
     </ProductoContext.Provider>)
 };

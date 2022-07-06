@@ -8,6 +8,7 @@ export type TotalContextProps = {
     resPedido: (pedido: Pedido) => void ,
     borrarPedido: () => void,
     statusPedidoPendiente: () => void
+    recuperandoPedido: (data : TotalPedido) => void
 }
 
  export const ProductoContext = createContext<TotalContextProps>( {} as TotalContextProps);

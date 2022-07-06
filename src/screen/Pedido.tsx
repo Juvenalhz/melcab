@@ -61,6 +61,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
         
         const { data } = await api.get(`/queryPedido/${user?.id}`);
+        
       
         numeroPedidos.current = data.msg.id_pedido
         let nuevoPedido;
@@ -74,9 +75,8 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
             numeroPedidos.current = nuevoPedido.data.id_pedido
             console.log('Pedido creado')
             statusPedidoPendiente()
-  
         }
-        navigation.navigate('Pagar', {id_pedido: numeroPedidos})
+        navigation.navigate('Pagar', {id_pedido: numeroPedidos.current})
     }
 
 
@@ -93,7 +93,6 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
 
             <TouchableOpacity
                 onPress={
-                    // () => navigation.navigate('Pagar')
                     async () => {
                         if (pedidoState.total < 50) {
                             return Alert.alert(

@@ -10,9 +10,9 @@ export interface Pedido {
 }
 
 export interface TotalPedido {
-    total: number,
+    total: number ,
     pedidos: Pedido[],
-    pedidoPendiente : boolean
+    pedidoPendiente?: boolean
 }
 
 export interface LoginResponse {
