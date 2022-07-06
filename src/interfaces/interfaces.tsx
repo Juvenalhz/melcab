@@ -52,7 +52,8 @@ export interface RegisterData {
     direccion: string,
     longitud: number,
     latitud: number,
-    rif: string
+    rif: string,
+    Tnegocio:number
 }
 
 export interface UbicacionLocal {
@@ -77,4 +78,8 @@ export interface Orden {
     id_producto: number
 }
 
-
+export interface TiposNegocios {
+    id_tn: number,
+    nombre_tn: string
+    
+}

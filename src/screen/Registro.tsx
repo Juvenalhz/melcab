@@ -1,12 +1,16 @@
 import Geolocation from '@react-native-community/geolocation'
 import { DrawerScreenProps } from '@react-navigation/drawer'
 import React, { useContext, useEffect, useState } from 'react'
-import { PermissionsAndroid,ActivityIndicator, Alert, KeyboardAvoidingView, Text, TouchableOpacity, View } from 'react-native'
+import { PermissionsAndroid,ActivityIndicator, Alert, KeyboardAvoidingView, Text, TouchableOpacity, View,StyleSheet } from 'react-native'
 import { Directions, ScrollView, TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { AppBar } from '../componentes/AppBar'
 import { AuthContext } from '../context/AuthContext'
 import Geocoder from 'react-native-geocoding';
+import {Picker} from '@react-native-picker/picker';
+import api from '../api/endpoint/Endpoint';
+import {TiposNegocios} from '../interfaces/interfaces';
+
 interface Props extends DrawerScreenProps<any, any> {
 }
 
@@ -35,11 +39,18 @@ export const Registro = ({ navigation }: Props) => {
         },
         direccion: ''
     })
+    const [Tnegocios, setTnegocios] =  useState<TiposNegocios[]>([])
+   
+    const [Tnegocio, setTnegocio] = useState(0);
+
 
     useEffect(() => {
         // location()
+        CargarTiposDeNegocios()
         requestLocationPermission()
     }, [])
+
+
 
     useEffect(() => {
         if (errorMessage.length === 0) return;
@@ -55,6 +66,16 @@ export const Registro = ({ navigation }: Props) => {
             }
         ])
     }, [errorMessage != ''])
+
+
+    const CargarTiposDeNegocios =  async() => {
+
+        await    api.get('/TiposNegocios/')
+        .then(resp => {
+            // console.log(resp.data);
+            setTnegocios(resp.data.data);
+                    }).catch(err => { });
+    }
 
 
     const requestLocationPermission = async () => {
@@ -116,6 +137,7 @@ export const Registro = ({ navigation }: Props) => {
 
 
     }
+
     return (
         <>
 
@@ -251,6 +273,39 @@ export const Registro = ({ navigation }: Props) => {
                         <TextInput placeholder="Telefono" style={{ width: '80%', }} value={tlf} onChangeText={(e) => { settlf(e) }} />
                     </View>
 
+          {/* and value defined */}
+          <View style={[{
+                        width: '80%',
+
+                        height: 50,
+                        borderColor: '#0D3084',
+                        borderWidth: 1.5,
+                        borderRadius: 15,
+                        marginBottom: 15,
+                        flexDirection: 'row',
+                        marginHorizontal: 30,
+                        alignItems: 'center'
+                    }, ,
+                    ((!Tnegocio && onPress)) ? { borderColor: 'red' } : { borderColor: '#0D3084' },]} >
+                        <Icon name='business-outline' size={20} color="black" style={{ marginLeft: 10 }} />
+                        <Picker
+                        style={{ width: '80%', }}
+                        selectedValue={Tnegocio}
+                        onValueChange={(itemValue, itemIndex) =>
+                        setTnegocio(itemValue)
+                         }
+                     >
+                        <Picker.Item style={{color:'gray'}} label='Tipo de Negocio' value={0} />
+                         {Tnegocios &&
+                         Tnegocios.map((i: TiposNegocios) => (
+
+                            <Picker.Item label={i.nombre_tn} value={i.id_tn}/>
+                        ))
+                    }
+                        </Picker>
+                    </View>
+
+          
                     {/* <View style={{
                         width: '80%',
 
@@ -289,7 +344,7 @@ export const Registro = ({ navigation }: Props) => {
                         }
                         else setloaded(false);
 
-                        const registroExitoso = registro({ user,pass: pass1, name, tlf, email, direccion: currentPosition.direccion, longitud: currentPosition.region.longitude, latitud: currentPosition.region.latitude, rif });
+                        const registroExitoso = registro({ user,pass: pass1, name, tlf, email, direccion: currentPosition.direccion, longitud: currentPosition.region.longitude, latitud: currentPosition.region.latitude, rif,Tnegocio });
 
                         if (await registroExitoso) {
                             setloaded(true);
@@ -303,6 +358,7 @@ export const Registro = ({ navigation }: Props) => {
                             setuser('');
                             settlf('');
                             setrif('');
+                            setTnegocio(0)
                         } else {
                             setonPress(true);
                         }
@@ -330,4 +386,5 @@ export const Registro = ({ navigation }: Props) => {
             </KeyboardAvoidingView>
         </>
     )
+    
 }

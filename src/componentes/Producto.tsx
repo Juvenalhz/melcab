@@ -38,7 +38,7 @@ export const Producto = ({ datos, producto }: Props) => {
             <TouchableOpacity style={{ backgroundColor: '#BFBFBF', width: 115, height: 150, borderRadius: 10 }} onPress={() => {
                 toggleOverlay()
             }} >
-                <Image style={{ width: 120, height: 150, marginBottom: 15 }} source={{ uri: 'http://192.168.1.93:9000/' + producto?.id + 'prod-planetadulce.png' }} />
+                <Image style={{ width: 120, height: 150, marginBottom: 15 }} source={{ uri: 'https://tuplanetadulce.com/' + producto?.id + 'prod-planetadulce.png' }} />
 
             </TouchableOpacity>
 
@@ -98,16 +98,16 @@ export const Producto = ({ datos, producto }: Props) => {
         <Text style={{ padding: 5, fontSize: 16, fontWeight: 'bold', marginHorizontal: 10, marginVertical: 10, borderColor: 'rgba(13,48,132,0.5)', borderTopColor: 'white', borderWidth: 2, borderRadius: 8 }}>
             {datos?.nombre ?? producto?.nombre}
         </Text>
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ height: window.width * 1.50, width: window.width * 0.90 }}>
-            <View style={{ margin: 10, alignItems: 'center' }}>
-                <Image style={{ width: 250, height: 330, marginBottom: 15 }} source={{ uri: 'https://tuplanetadulce.com/' + producto?.id + 'prod-planetadulce.png' }} />
-                <View>
+        <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ height: window.height * 0.80, width: window.width * 0.90 }}>
+            <View style={{ margin: 10, alignItems: 'center'}}>
+                <Image style={{ width: 250, height: 300, marginBottom: 15 }} source={{ uri: 'https://tuplanetadulce.com/' + producto?.id + 'prod-planetadulce.png' }} />
+                <View >
                     <Text style={{ fontSize: 20, paddingTop: 5, paddingBottom: 5, fontWeight: 'bold' }}>{producto.nombre}</Text>
                     <Text style={{ fontSize: 16, paddingTop: 5, paddingBottom: 5 }}> {producto.descripcion}</Text>
                         <Text style={{ fontSize: 16, paddingTop: 5, paddingBottom: 5, textAlign: 'center' }}>Precio:</Text>
                         <Text style={{
                             textAlign: 'center', fontSize: 18, fontWeight: 'bold',
-                            backgroundColor: 'rgb(10,84,154)', color: 'white', marginTop: 10, marginLeft: '25%', marginRight: '25%'
+                            backgroundColor: 'rgb(10,84,154)', color: 'white', marginTop: 0, marginLeft: '25%', marginRight: '25%'
                         }}>{
                                 user ?
                                     user?.rango == 1 ? producto.precio :

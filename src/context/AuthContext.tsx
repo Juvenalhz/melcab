@@ -92,10 +92,10 @@ export const AuthProvider = ({ children }: props) => {
 
     };
     
-    const registro = async ({ user, pass, name, tlf, email, direccion, latitud, longitud, rif}: RegisterData) => {
-        console.log( user, pass, name, tlf, email, direccion, latitud, longitud)
+    const registro = async ({ user, pass, name, tlf, email, direccion, latitud, longitud, rif,Tnegocio}: RegisterData) => {
+        console.log( user, pass, name, tlf, email, direccion, latitud, longitud,Tnegocio)
         try {
-            const { data } = await api.post<LoginResponse>('/register', { user, pass, name, tlf, email,  direccion, latitud, longitud, rif });
+            const { data } = await api.post<LoginResponse>('/register', { user, pass, name, tlf, email,  direccion, latitud, longitud, rif,Tnegocio });
             console.log( data);
             if (data.msg) {
                 dispatch({ type: 'addError', payload: data.msg })
