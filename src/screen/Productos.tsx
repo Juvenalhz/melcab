@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { Component, useContext, useEffect, useState,useCallback } from 'react'
+import React, { Component, useContext, useEffect, useState,useCallback, useRef } from 'react'
 import { Text, View, TouchableOpacity, ScrollView, TextInput, ActivityIndicator,SafeAreaView,RefreshControl } from 'react-native';
 import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
@@ -25,7 +25,8 @@ export const Productos = ({ navigation, route }: Props) => {
 
     const [datosproducto, setdatosproducto] = useState<dataProducto[]>([])
     const [isLoading, setisLoading] = useState(true)
-    const [marca, setMarca] = useState(route.params?.marcaid)
+    //const [marca, setMarca] = useState()
+    const marca = useRef()
     const [refreshing, setRefreshing] = useState(false);
     
     useEffect(() => {
@@ -34,7 +35,7 @@ export const Productos = ({ navigation, route }: Props) => {
             console.log(resp.data)
             setdatosproducto(resp.data.productos);
             setfilterDataProducto(resp.data.productos);
-
+            marca.current = route.params?.marcaid
             setisLoading(false);
         })
     }, [route.params?.marcaid])
@@ -70,7 +71,7 @@ export const Productos = ({ navigation, route }: Props) => {
     }
     const  onRefresh = useCallback( async () => {
         setRefreshing(true);
-     await  api.get<JSONProductos>('/marcas/' + marca).then(resp => {
+     await  api.get<JSONProductos>('/marcas/' + marca.current).then(resp => {
            setdatosproducto(resp.data.productos);
            setfilterDataProducto(resp.data.productos);
 
