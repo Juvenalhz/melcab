@@ -78,12 +78,12 @@ export const Ordenes = ({ navigation, route }: Props) => {
 
 
     const queryOrdenes = async (id: number) => {
-
+setLoading(true)
         if (user?.tipouser == 1) {
-            const { data } = await api.post('/Ordenes', { iduser: id });
+            const { data } = await api.post('/Ordenes', { iduser: id }).finally(() => { setLoading(false); });
             setOrdenes(data)
         } else {
-            const { data } = await api.post('/ordenesDelivery', { iduser: id });
+            const { data } = await api.post('/ordenesDelivery', { iduser: id }).finally(() => { setLoading(false); });;
             setOrdenes(data)
         }
 
