@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { Component, useContext, useEffect, useState } from 'react'
-import { Text, View, TouchableOpacity, ScrollView, TextInput, ActivityIndicator } from 'react-native';
+import React, { Component, useContext, useEffect, useState,useCallback } from 'react'
+import { Text, View, TouchableOpacity, ScrollView, TextInput, ActivityIndicator,SafeAreaView,RefreshControl } from 'react-native';
 import { AppBar } from '../componentes/AppBar';
 import { Producto } from '../componentes/Producto';
 import { ProductoContext } from '../context/ProductoContext';
@@ -25,7 +25,9 @@ export const Productos = ({ navigation, route }: Props) => {
 
     const [datosproducto, setdatosproducto] = useState<dataProducto[]>([])
     const [isLoading, setisLoading] = useState(true)
-
+    const [marca, setMarca] = useState(route.params?.marcaid)
+    const [refreshing, setRefreshing] = useState(false);
+    
     useEffect(() => {
         setisLoading(true);
         api.get<JSONProductos>('/marcas/' + route.params?.marcaid).then(resp => {
@@ -44,8 +46,8 @@ export const Productos = ({ navigation, route }: Props) => {
         cantidadProducto,
         total } = HookProductos();
 
-
-    const [search, setsearch] = useState('');
+        
+        const [search, setsearch] = useState('');
 
     const [filterDataProducto, setfilterDataProducto] = useState<dataProducto[]>();
 
@@ -66,6 +68,15 @@ export const Productos = ({ navigation, route }: Props) => {
             setsearch(text);
         }
     }
+    const  onRefresh = useCallback( async () => {
+        setRefreshing(true);
+     await  api.get<JSONProductos>('/marcas/' + marca).then(resp => {
+           setdatosproducto(resp.data.productos);
+           setfilterDataProducto(resp.data.productos);
+
+           setRefreshing(false);
+       })
+      }, []);
 
     return (
         <>
@@ -86,12 +97,20 @@ export const Productos = ({ navigation, route }: Props) => {
                     </View>
 
                     :
-
-                    <ScrollView style={{ backgroundColor: 'white' }}>
+                <SafeAreaView>
+                    <ScrollView
+                         refreshControl={
+                          <RefreshControl
+                           refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            />
+                        }
+                    style={{ backgroundColor: 'white' }}>
                         {filterDataProducto?.map((user) => (
                             <Producto key={user.id} restarProducto={restarProducto} sumarProducto={sumarProducto} datos={user} producto={user} />
-                        ))}
+                            ))}
                     </ScrollView>
+                </SafeAreaView>
                 }
 
             </View>

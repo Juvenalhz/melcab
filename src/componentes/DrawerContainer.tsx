@@ -58,7 +58,7 @@ export const DrawerContenido = ({ navigation, route }: Props) => {
   return (
 
 
-    <DrawerContentScrollView style={{ flex: 1, backgroundColor: '#f0f8ff' }}>
+    <DrawerContentScrollView style={{ flex: 1, backgroundColor: '#E1E5F0' }}>
 
       {/* //////////////////////////////////////////////////// */}
       {/*  Para usuario logueado */}

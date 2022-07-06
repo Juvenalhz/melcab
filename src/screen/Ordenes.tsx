@@ -1,5 +1,5 @@
 import { DrawerScreenProps } from '@react-navigation/drawer'
-import React, { useContext, useEffect, useState, useRef } from 'react'
+import React, { useContext, useEffect, useState, useRef,useCallback } from 'react'
 import api from '../api/endpoint/Endpoint'
 import { AppBar } from '../componentes/AppBar'
 import { ProductoContext } from '../context/ProductoContext'
@@ -11,6 +11,7 @@ import { DataTable } from 'react-native-paper'
 import { Usuario } from '../interfaces/interfaces';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Snackbar from 'react-native-snackbar';
+import Icon from 'react-native-vector-icons/Ionicons';
 interface Props extends DrawerScreenProps<any, any> {
 
 }
@@ -29,7 +30,9 @@ interface orden {
     id_delivery: number | null,
     esatus: number
     estatus: string;
-    id_estatus: number
+    id_estatus: number,
+    color: string,
+    icono: string
 
 }
 
@@ -78,17 +81,17 @@ export const Ordenes = ({ navigation, route }: Props) => {
 
 
     const queryOrdenes = async (id: number) => {
-
+setLoading(true)
         if (user?.tipouser == 1) {
-            const { data } = await api.post('/Ordenes', { iduser: id });
+            const { data } = await api.post('/Ordenes', { iduser: id }).finally(() => { setLoading(false); });
             setOrdenes(data)
         } else {
-            const { data } = await api.post('/ordenesDelivery', { iduser: id });
+            const { data } = await api.post('/ordenesDelivery', { iduser: id }).finally(() => { setLoading(false); });;
             setOrdenes(data)
         }
 
     }
-    const [refreshing, setRefreshing] = React.useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     const [visible, setVisible] = useState(false);
     const [visible2, setVisible2] = useState(false);
     const [visible3, setVisible3] = useState(false);
@@ -122,10 +125,11 @@ export const Ordenes = ({ navigation, route }: Props) => {
 
     };
 
-    const  onRefresh = React.useCallback( async () => {
+    const  onRefresh = useCallback( async () => {
         setRefreshing(true);
        await queryOrdenes(user!.id).then(() => setRefreshing(false));
       }, []);
+      
     const window = Dimensions.get("window");
 
     if (loading) {
@@ -149,14 +153,16 @@ export const Ordenes = ({ navigation, route }: Props) => {
                       {user?.tipouser == 1 ? <AppBar titulo={'Mis Ordenes'} navigation={navigation} route={route} /> : <AppBar titulo={'Por entregar'} navigation={navigation} route={route} />}
           
                       {ordenes ?
-                      <SafeAreaView>
+                      <SafeAreaView  style={{flex: 1}}>
                           <ScrollView
+                                style={{flex: 1}}
                                   refreshControl={
                                       <RefreshControl
                                         refreshing={refreshing}
                                         onRefresh={onRefresh}
                                       />
                                     }
+                                  
                           >
                               {
                                   ordenes.results.map((i: orden) => (
@@ -167,10 +173,13 @@ export const Ordenes = ({ navigation, route }: Props) => {
                                       }}>
                                           <ListItem bottomDivider hasTVPreferredFocus={undefined} tvParallaxProperties={undefined} style={{ width: '100%' }} >
                                               <ListItem.Content>
-                                                  <View style={{ flexDirection: 'row' }} >
-                                                      <ListItem.Title>Pedido Numero {i.id_pedido}</ListItem.Title>
-                                                      <Text style={[{ fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
-                                                      i.id_estatus == 3 ? { color: 'green' }: i.id_estatus == 4 ? { color: 'orange' } : i.id_estatus == 2 ? { color: 'yelllow' } : { color: 'red' } ]}>{i.estatus}</Text>
+                                                  <View style={{ flexDirection: 'row'}} >
+
+                                                      <ListItem.Title> Pedido Numero {i.id_pedido}</ListItem.Title>
+                                                      <Text style={[{ fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' }, { color:i.color }]}>{i.estatus}</Text>
+                         
+                                                        <Icon name={i.icono} size={30} color={i.color}  />
+
                                                   </View>
                                                   <ListItem.Subtitle>Costo total: {i.monto.toFixed(2)}</ListItem.Subtitle>
                                                   <ListItem.Subtitle>Referencia de pago: {i.num_ref}</ListItem.Subtitle>

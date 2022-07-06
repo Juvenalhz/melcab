@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     },
     banner: {  
         width: 'auto',
-        backgroundColor: '#6F53C7',
+        backgroundColor: '#2B4A93',
         alignItems: 'center',
         borderRadius: 10,
         marginBottom:20,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
 },
 bannerU: {  
     width: 'auto',
-    backgroundColor: '#6F53C7',
+    backgroundColor: '#2B4A93',
     alignItems: 'center',
     borderRadius: 10,
     marginBottom:10,
@@ -198,7 +198,7 @@ bannerU: {
     Pusuario:{
         flexDirection: 'row',
         width: 'auto',
-        backgroundColor: '#6F53C7',
+        backgroundColor: '#2B4A93',
         // alignContent: 'flex-start',
         borderRadius: 10,
         marginVertical:5,
