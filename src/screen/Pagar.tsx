@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Image, Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Button, Card, Input } from 'react-native-elements';
 import { AppBar } from '../componentes/AppBar';
@@ -28,7 +28,9 @@ export const Pagar = ({ navigation, route }: Props) => {
     load: false,
     msg: ''
   });
-  const [id_pedido, setid_pedido] = useState()
+
+  //const [id_pedido, setid_pedido] = useState()
+  //const id_pedido = useRef()
   interface Cuenta {
     id: number;
     cuenta: string;
@@ -59,17 +61,16 @@ export const Pagar = ({ navigation, route }: Props) => {
     }
   }
   useEffect(() => {
-    if (id_pedido != route.params?.id_pedido) {
-      setid_pedido(route.params?.id_pedido)
+  
       if (route.params?.tiempoRestante) setSecondsLeft(1200 - (route.params?.tiempoRestante * 60));
       else setSecondsLeft(1200);
       startTimer();
       console.log(route.params?.tiempoRestante)
-    }
+    
     return () => {
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [id_pedido != route.params?.id_pedido])
+  }, [route.params?.id_pedido])
 
 
   useEffect(() => {

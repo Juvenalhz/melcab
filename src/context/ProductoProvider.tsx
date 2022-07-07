@@ -21,7 +21,7 @@ export const ProductoProvider = ({ children }: props) => {
     const addPedido = (pedidoAct: Pedido) => {
 
         const query = pedidoState.pedidos.find((pedido) => 
-            pedido.nombre == pedidoAct.nombre );
+            pedido.id == pedidoAct.id );
 
         console.log('addpedido: ' + JSON.stringify(query))
 

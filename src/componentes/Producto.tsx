@@ -99,7 +99,7 @@ export const Producto = ({ datos, producto }: Props) => {
                                         });
                                     } else {
                                         if (producto.stock > (pedidos.find((pedido) => pedido.id == producto.id)?.cantidad ?? 0)) {
-
+                                            console.log(producto)
                                             addPedido(producto)
                                         }
                                     }
