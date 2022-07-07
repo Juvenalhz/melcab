@@ -13,6 +13,7 @@ import { DrawerScreenProps } from '@react-navigation/drawer';
 import api from '../api/endpoint/Endpoint';
 import { AuthContext } from '../context/AuthContext';
 import BackgroundTimer from 'react-native-background-timer';
+import { Dolar } from '../interfaces/interfaces';
 
 interface Props extends DrawerScreenProps<any, any> {
 }
@@ -21,6 +22,8 @@ interface Props extends DrawerScreenProps<any, any> {
 export const Pagar = ({ navigation, route }: Props) => {
   const [secondsLeft, setSecondsLeft] = useState(1200);
   const [numeroPedido, setnumeroPedido] = useState<number>()
+  const [Dolar, setDolar] = useState<Dolar>([])
+  const [TotalBs,setTotalBs]  = useState('')
   const [numref, setnumref] = useState('');
   const { pedidoState, addPedido, borrarPedido, statusPedidoPendiente } = useContext(ProductoContext);
   const { user } = useContext(AuthContext);
@@ -59,6 +62,7 @@ export const Pagar = ({ navigation, route }: Props) => {
     }
   }
   useEffect(() => {
+
     if (id_pedido != route.params?.id_pedido) {
       setid_pedido(route.params?.id_pedido)
       if (route.params?.tiempoRestante) setSecondsLeft(1200 - (route.params?.tiempoRestante * 60));
@@ -67,9 +71,16 @@ export const Pagar = ({ navigation, route }: Props) => {
       console.log(route.params?.tiempoRestante)
     }
     return () => {
+      startTimer();
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [id_pedido != route.params?.id_pedido])
+  }, [id_pedido])
+
+useEffect(() => {
+  getDolarBcv()
+  startTimer();
+console.log(id_pedido)
+},[])
 
 
   useEffect(() => {
@@ -190,7 +201,7 @@ export const Pagar = ({ navigation, route }: Props) => {
     console.log(JSON.stringify(cuentaSeleccionada));
   }
 
-  console.log(pedidoState);
+  // console.log(pedidoState);
 
   const generarPedido = async () => {
     BackgroundTimer.stopBackgroundTimer();
@@ -202,6 +213,17 @@ export const Pagar = ({ navigation, route }: Props) => {
 
     setnumref('');
   }
+
+  const getDolarBcv = async () => {
+
+    await api.get('/Dolar').then((resp) => {
+      // console.log(resp.data.data);
+      setDolar(resp.data.data[0]);
+      setTotalBs((pedidoState.total * resp.data.data[0].monto).toFixed(2));
+    })
+  }
+
+
   if (loading.load) {
     return (
       <>
@@ -261,7 +283,11 @@ export const Pagar = ({ navigation, route }: Props) => {
               </View>
 
 
-
+              <View style={{ flexDirection: 'column', alignItems:'center', marginVertical: 5,marginTop:20 }}>
+                <Text style={{padding:5}}> Taza Bcv: Bs.{Dolar.monto}</Text>
+                <Text style={{backgroundColor: '#0E16AA', color: '#ffff',paddingHorizontal:15}}> Total: Bs.{TotalBs}</Text>
+                {/* <FontAwesomeIcon icon={faCopy} size={20} color={'#0D3084'} style={{ marginRight: 50 }} /> */}
+              </View>
 
             </Card>
             {/* <Card containerStyle={{ borderRadius: 10, width: 300, height: 120 }}>

@@ -84,3 +84,9 @@ export interface TiposNegocios {
     nombre_tn: string
     
 }
+export interface Dolar {
+    fecha: string,
+    monto: number,
+    nota: string
+    
+}
