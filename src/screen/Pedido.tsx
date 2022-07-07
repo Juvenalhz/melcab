@@ -68,7 +68,7 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
         
       console.log(data.msg);
       let nuevoPedido;
-      if(data){
+      if(data.msg){
           numeroPedidos.current = data.msg.id_pedido
           //si no tiene estatus pendiente por pagar (1) genera pedido
           if (data.msg.estatus != 1) {

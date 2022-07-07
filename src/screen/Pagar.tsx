@@ -72,7 +72,6 @@ export const Pagar = ({ navigation, route }: Props) => {
       console.log(route.params?.tiempoRestante)
     
     return () => {
-      startTimer();
       BackgroundTimer.stopBackgroundTimer();
     };
   }, [route.params?.id_pedido])
