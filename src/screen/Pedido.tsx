@@ -62,21 +62,35 @@ export const PedidoScreen = ({ route, navigation }: Props) => {
         
         const { data } = await api.get(`/queryPedido/${user?.id}`);
         
-      
-        numeroPedidos.current = data.msg.id_pedido
-        let nuevoPedido;
-        //si no tiene estatus pendiente por pagar (1) genera pedido
-        if (data.msg.estatus != 1) {
+      console.log(data.msg);
+      let nuevoPedido;
+      if(data.length > 0 ){
+
+          numeroPedidos.current = data.msg.id_pedido
+          //si no tiene estatus pendiente por pagar (1) genera pedido
+          if (data.msg.estatus != 1) {
+              nuevoPedido = await api.post('/nuevoPedido', {
+                  iduser: user?.id,
+                  monto: pedidoState.total,
+                  productos: pedidoState.pedidos
+                });
+                numeroPedidos.current = nuevoPedido.data.id_pedido
+                console.log('Pedido creado')
+                statusPedidoPendiente()
+            }
+            navigation.navigate('Pagar', {id_pedido: numeroPedidos.current})
+        }else{
             nuevoPedido = await api.post('/nuevoPedido', {
                 iduser: user?.id,
                 monto: pedidoState.total,
                 productos: pedidoState.pedidos
-            });
-            numeroPedidos.current = nuevoPedido.data.id_pedido
-            console.log('Pedido creado')
-            statusPedidoPendiente()
+              });
+              numeroPedidos.current = nuevoPedido.data.id_pedido
+              console.log('Pedido creado')
+              statusPedidoPendiente()
+            navigation.navigate('Pagar', {id_pedido: numeroPedidos.current})
+
         }
-        navigation.navigate('Pagar', {id_pedido: numeroPedidos.current})
     }
 
 

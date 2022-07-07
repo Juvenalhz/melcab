@@ -74,12 +74,12 @@ export const Pagar = ({ navigation, route }: Props) => {
       startTimer();
       BackgroundTimer.stopBackgroundTimer();
     };
-  }, [id_pedido])
+  }, [route.params?.id_pedido])
 
 useEffect(() => {
   getDolarBcv()
   startTimer();
-console.log(id_pedido)
+console.log(pedidoState)
 },[])
 
 
